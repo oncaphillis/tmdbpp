@@ -22,19 +22,6 @@ int main(int, char **)
 
 
         return 0;
-
-        {
-          std::stringstream ss;
-          curlpp::options::Url myUrl(std::string("https://api.themoviedb.org/3/movie/550?api_key=b1f45d094cb0c142dba7442cb5dd7341"));
-          curlpp::Easy myRequest;
-          myRequest.setOpt(myUrl);
-          myRequest.setOpt(curlpp::options::WriteStream(&ss));
-          myRequest.perform();
-
-          std::cerr << ss.str() << std::endl;
-          tmdbpp::Movie m(ss);
-
-        }
     }
     catch( curlpp::RuntimeError &e )
     {
