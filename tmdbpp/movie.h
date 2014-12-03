@@ -5,10 +5,30 @@
 #include <list>
 
 namespace tmdbpp {
-
-    class MovieSummary : public IdHolder {
+    class MovieReleaseSummary : public IdHolder {
     private:
         typedef IdHolder super;
+    public:
+        using super::super;
+
+        std::string title() const {
+            return ptree().get<std::string>("title","");
+        }
+        std::string poster_path() const {
+            return ptree().get<std::string>("poster_path","");
+        }
+        std::string release_date() const {
+            return ptree().get<std::string>("release_date","");
+        }
+        std::string backdrop_path() const {
+            return ptree().get<std::string>("backdrop_path","");
+        }
+
+    };
+
+    class MovieSummary : public MovieReleaseSummary {
+    private:
+        typedef MovieReleaseSummary super;
     public:
         using super::super;
 
@@ -16,28 +36,12 @@ namespace tmdbpp {
             return ptree().get<bool>("adult",false);
         }
 
-        std::string backdrop_path() const {
-            return ptree().get<std::string>("backdrop_path","");
-        }
-
         std::string original_title() const {
             return ptree().get<std::string>("original_title","");
         }
 
-        std::string release_date() const {
-            return ptree().get<std::string>("release_date","");
-        }
-
         float popularity() const {
             return ptree().get<float>("popularity",0.0);
-        }
-
-        std::string poster_path() const {
-            return ptree().get<std::string>("poster_path","");
-        }
-
-        std::string title() const {
-            return ptree().get<std::string>("title","");
         }
 
         float vote_average() const {

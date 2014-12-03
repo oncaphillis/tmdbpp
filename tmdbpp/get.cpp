@@ -11,5 +11,12 @@ namespace tmdbpp {
         std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+"?"+Arg("api_key",api().key());
         return fetch(url,m);
     }
+    Collection Get::collection(int id) {
+        Collection c;
+        std::stringstream ss;
+        ss << id;
+        std::string url = Api::BaseUrl+Api::MethodCollection+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        return fetch(url,c);
+    }
 }
 

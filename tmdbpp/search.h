@@ -6,6 +6,7 @@
 
 #include <tmdbpp/movies.h>
 #include <tmdbpp/companies.h>
+#include <tmdbpp/collections.h>
 #include <tmdbpp/apiagent.h>
 
 namespace tmdbpp {
@@ -17,8 +18,9 @@ namespace tmdbpp {
         Search(Api & api) : super(api) {
         }
 
-        Movies    movie(const std::string & query,const std::string & language="",int page=-1);
-        Companies company(const std::string &query,int page=-1);
+        Movies      movie(const std::string & query,const std::string & language="",int page=-1);
+        Companies   company(const std::string &query,int page=-1);
+        Collections collection(const std::string &query,int page=-1);
     };
 }
 

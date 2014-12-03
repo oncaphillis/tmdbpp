@@ -26,4 +26,18 @@ namespace tmdbpp {
        Companies c;
        return fetch(url,c);
     }
+
+    Collections Search::collection(const std::string & query,int page) {
+       std::stringstream ss;
+       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectCollection+"?"+
+                Arg("api_key",api().key())+"&"+Arg("query",query);
+
+       if(page>0)
+           url+="&"+Arg("page",page);
+
+       std::cerr << "(" << url << ")" << std::endl;
+
+       Collections c;
+       return fetch(url,c);
+    }
 }

@@ -128,6 +128,19 @@ namespace tmdbpp {
         }
     };
 
+    class NameIdHolder : public JSonMapper {
+    private:
+        typedef JSonMapper super;
+    public:
+        using super::super;
+        std::string name() const {
+            return ptree().get<std::string>("name","");
+        }
+        const int  id() const {
+            return ptree().get<int>("id");
+        }
+    };
+
     class Country : public NameHolder {
     private:
         typedef NameHolder super;
@@ -151,24 +164,18 @@ namespace tmdbpp {
 
     };
 
-    class CompanySummary : public IdHolder {
+    class CompanySummary : public NameIdHolder {
     private:
-        typedef IdHolder super;
+        typedef NameIdHolder super;
     public:
         using super::super;
-        std::string name() const {
-            return ptree().get<std::string>("name","");
-        }
     };
 
-    class Genre : public IdHolder {
+    class Genre : public NameIdHolder {
     private:
-        typedef IdHolder super;
+        typedef NameIdHolder super;
     public:
         using super::super;
-        std::string name() const {
-            return ptree().get<std::string>("name","");
-        }
     };
 
     class Configuration : public JSonMapper {

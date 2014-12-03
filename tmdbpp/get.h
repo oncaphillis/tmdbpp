@@ -3,6 +3,7 @@
 
 #include <tmdbpp/apiagent.h>
 #include <tmdbpp/movie.h>
+#include <tmdbpp/collection.h>
 
 namespace tmdbpp {
 
@@ -13,6 +14,8 @@ namespace tmdbpp {
         Get(Api & api ) : super(api) {
         }
         Movie movie(int id);
+        Collection collection(int id);
+
     private:
     };
 }
