@@ -22,6 +22,7 @@ namespace tmdbpp {
         static const std::string MethodSearch;
         static const std::string MethodMovie;
         static const std::string MethodCollection;
+        static const std::string MethodCompany;
 
         static const std::string ObjectCompany;
         static const std::string ObjectMovie;

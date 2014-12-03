@@ -6,9 +6,9 @@
 
 namespace tmdbpp {
 
-    class Companies : public PagedCollection<Company> {
+    class Companies : public PagedCollection<CompanyInfo> {
     private:
-        typedef PagedCollection<Company> super;
+        typedef PagedCollection<CompanyInfo> super;
     public:
         using super::super;
 

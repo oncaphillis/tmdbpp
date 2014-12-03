@@ -5,7 +5,7 @@
 #include <string>
 
 namespace tmdbpp {
-    class Company : public CompanySummary {
+    class CompanyInfo : public CompanySummary {
     private:
         typedef CompanySummary super;
     public:
@@ -13,6 +13,26 @@ namespace tmdbpp {
     private:
         std::string logo_path() const {
             return ptree().get<std::string>("logo_path","");
+        }
+    };
+
+    class Company : public CompanyInfo {
+    private:
+        typedef CompanyInfo super;
+    public:
+        using super::super;
+
+        std::string description() const {
+            return ptree().get<std::string>("description","");
+        }
+        std::string headquarters() const {
+            return ptree().get<std::string>("headquarters","");
+        }
+        std::string homepage() const {
+            return ptree().get<std::string>("homepage","");
+        }
+        int parent_company() const {
+            return ptree().get<int>("parent_company",0);
         }
     };
 }

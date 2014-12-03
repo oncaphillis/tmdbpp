@@ -18,5 +18,12 @@ namespace tmdbpp {
         std::string url = Api::BaseUrl+Api::MethodCollection+"/"+ss.str()+"?"+Arg("api_key",api().key());
         return fetch(url,c);
     }
+    Company Get::company(int id) {
+        Company c;
+        std::stringstream ss;
+        ss << id;
+        std::string url = Api::BaseUrl+Api::MethodCompany+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        return fetch(url,c);
+    }
 }
 

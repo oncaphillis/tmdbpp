@@ -30,7 +30,8 @@ int main(int, char **)
 
         for(const auto n : c.list()) {
             std::cerr << "**'" << n.name() << "'**" << std::endl;
-
+            std::cerr << " -- " << std::endl << api.get().company(n.id()).homepage() << std::endl
+                      << " -- " << std::endl;
         }
 
         {

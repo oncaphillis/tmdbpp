@@ -13,8 +13,11 @@ Supports
 
 * search().company("name",page);
 * search().movie("title","language",page);
+* search().collection("name",page);
 
 * get().movie(id)
+* get().collection(id)
+* get().company(id)
 
 CMakefile and other configs are under developed-
   
