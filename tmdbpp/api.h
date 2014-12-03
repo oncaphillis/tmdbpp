@@ -5,6 +5,7 @@
 #include <tmdbpp/util.h>
 #include <tmdbpp/search.h>
 #include <tmdbpp/get.h>
+#include <tmdbpp/apiagent.h>
 
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
@@ -21,6 +22,7 @@ namespace tmdbpp {
         static const std::string MethodSearch;
         static const std::string MethodMovie;
 
+        static const std::string ObjectCompany;
         static const std::string ObjectMovie;
 
 
@@ -60,15 +62,9 @@ namespace tmdbpp {
 
     private:
         Api(const std::string & apiKey) : _key(apiKey) {
-            curlpp::options::Url myUrl(BaseUrl+MethodConfig+"?api_key="+apiKey);
-            std::cerr << "|" << myUrl.getValue() << "|" << std::endl;
-            curlpp::Easy myRequest;
-            std::stringstream ss;
-            myRequest.setOpt(myUrl);
-            myRequest.setOpt(curlpp::options::WriteStream(&ss));
-            myRequest.perform();
-
-            _config = Configuration(ss);
+            ApiAgent ag(*this);
+            std::string url = BaseUrl+MethodConfig+"?api_key="+apiKey;
+            _config = ag.fetch(url,_config);
         }
 
         std::string   _key;

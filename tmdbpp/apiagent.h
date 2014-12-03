@@ -15,7 +15,6 @@ namespace tmdbpp {
         ApiAgent(Api & api) : _p_api(&api) {
 
         }
-    protected:
 
         template<class T>
         T & fetch(const std::string & url,T & t) {

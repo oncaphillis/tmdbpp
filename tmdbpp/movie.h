@@ -10,7 +10,7 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using  super::super;
+        using super::super;
 
         bool adult() {
             return ptree().get<bool>("adult",false);
@@ -54,6 +54,7 @@ namespace tmdbpp {
         typedef MovieSummary super;
 
     public:
+
         Movie() : super() {
         }
 
@@ -72,11 +73,6 @@ namespace tmdbpp {
         Movie(std::istream & is) : super(is) {
             setup();
         }
-
-        ~Movie()  {
-
-        }
-
 
         std::string belongs_to_collection() const {
             return ptree().get<std::string>("belongs_to_collection","");
@@ -129,7 +125,7 @@ namespace tmdbpp {
             return _spoken_languages;
         }
 
-        const std::list<Company> & production_companies() const {
+        const std::list<CompanySummary> & production_companies() const {
             return _production_companies;
         }
 
@@ -146,7 +142,7 @@ namespace tmdbpp {
 
         friend void swap(Movie & m0,Movie & m1) {
             using std::swap;
-            std::cerr << "#1 swap " << std::endl;
+
             swap(static_cast<super &>(m0),static_cast<super &>(m1));
 
             m0._genres.swap(m1._genres);
@@ -169,13 +165,13 @@ namespace tmdbpp {
             }
 
             for(auto n : ptree().get_child("production_companies")) {
-                _production_companies.push_back(Company(n.second));
+                _production_companies.push_back(CompanySummary(n.second));
             }
         }
         std::list<Genre>    _genres;
         std::list<Country>  _production_countries;
         std::list<Language> _spoken_languages;
-        std::list<Company>  _production_companies;
+        std::list<CompanySummary>  _production_companies;
     };
 }
 

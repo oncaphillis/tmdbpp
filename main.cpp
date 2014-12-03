@@ -11,16 +11,25 @@ int main(int, char **)
 {
     try
     {
+        tmdbpp::Api &api(tmdbpp::Api::instance());
 
-        tmdbpp::Movies m = tmdbpp::Api::instance().search().movies("indiana jones","de",2);
+        tmdbpp::Movies m = api.search().movie("indiana jones","de",1);
         std::cerr << m.page() << "/" << m.total_pages() << "@" << m.total_results() << std::endl;
-        std::cerr << "'" << m.list().begin()->title() << "'" << std::endl;
 
-        std::cerr << " --- " << std::endl
-                  << tmdbpp::Api::instance().get().movie(m.list().begin()->id()) << std::endl
-                  << " --- " << std::endl;
+        for(const auto n : m.list()) {
+            std::cerr << "'" << n.title() << "'" << std::endl;
+            tmdbpp::Movie m = api.get().movie(n.id());
+            for(const auto g : m.genres()) {
+                std::cerr << " >> '" << g.name() << "'" << std::endl;
+            }
+        }
 
+        tmdbpp::Companies c = api.search().company("fox");
+        std::cerr << c.page() << "/" << c.total_pages() << "@" << c.total_results() << std::endl;
 
+        for(const auto n : c.list()) {
+            std::cerr << "'" << n.name() << "'" << std::endl;
+        }
         return 0;
     }
     catch( curlpp::RuntimeError &e )

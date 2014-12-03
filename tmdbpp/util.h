@@ -46,9 +46,8 @@ namespace tmdbpp {
 
         JSonMapper & operator=(JSonMapper jsm) {
             swap(*this,jsm);
+            return *this;
         }
-
-    protected:
 
         const boost::property_tree::ptree & ptree() const {
             if(_up_ptree.get()==NULL)
@@ -81,10 +80,6 @@ namespace tmdbpp {
                 }
 
                 se.insert(n.first);;
-
-                if(!n.second.empty()) {
-                    std::cerr << "*(" << n.first << "::" << n.second.size()<< ")*" << std::endl;
-                }
             }
         }
 
@@ -133,8 +128,6 @@ namespace tmdbpp {
         }
     };
 
-
-
     class Country : public NameHolder {
     private:
         typedef NameHolder super;
@@ -158,15 +151,23 @@ namespace tmdbpp {
 
     };
 
-    class Company : public NameHolder,public IdHolder {
+    class CompanySummary : public IdHolder {
+    private:
+        typedef IdHolder super;
     public:
-        Company(const boost::property_tree::ptree & pt) : NameHolder(pt),IdHolder(pt) {
+        using super::super;
+        std::string name() const {
+            return ptree().get<std::string>("name","");
         }
     };
 
-    class Genre : public NameHolder,public IdHolder {
+    class Genre : public IdHolder {
+    private:
+        typedef IdHolder super;
     public:
-        Genre(const boost::property_tree::ptree & pt) : NameHolder(pt),IdHolder(pt) {
+        using super::super;
+        std::string name() const {
+            return ptree().get<std::string>("name","");
         }
     };
 

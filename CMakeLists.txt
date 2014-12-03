@@ -17,9 +17,13 @@ add_executable(tmdbquery
  tmdbpp/search.h
  tmdbpp/get.h
  tmdbpp/api.h
+ tmdbpp/apiagent.h
  tmdbpp/util.h
  tmdbpp/movie.h
  tmdbpp/movies.h
+ tmdbpp/companies.h
+ tmdbpp/movies.h
+ tmdbpp/pagedcollection.h
 )
 
 target_link_libraries(tmdbquery curl curlpp)

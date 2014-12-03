@@ -11,7 +11,9 @@ See COPYING for Copyright
 
 Supports 
 
-* search().movies("title","language",page);
+* search().company("name",page);
+* search().movie("title","language",page);
+
 * get().movie(id)
 
 CMakefile and other configs are under developed-

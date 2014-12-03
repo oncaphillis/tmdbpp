@@ -5,7 +5,9 @@ namespace tmdbpp {
     const std::string Api::MethodConfig  = "/configuration";
     const std::string Api::MethodSearch  = "/search";
     const std::string Api::MethodMovie   = "/movie";
+
     const std::string Api::ObjectMovie   = "/movie";
+    const std::string Api::ObjectCompany = "/company";
 };
 
 
