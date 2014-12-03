@@ -6,8 +6,25 @@ aux_source_directory(. SRC_LIST)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
+FIND_PACKAGE(CURL)
+IF(CURL_FOUND)
+  MESSAGE(STATUS "Curl libraries found at: ${CURL_LIBRARIES}")
+  MESSAGE(STATUS "Curl includes found at: ${CURL_INCLUDE_DIRS}")
+else()
+  MESSAGE(SEND_ERROR "Could not find cURL on your system")
+ENDIF(CURL_FOUND)
 
-INCLUDE_DIRECTORIES( "." )
+find_path(CURLPP_INCLUDE_DIRS "curlpp/Easy.hpp" HINTS "/usra/include/*"     )
+find_library(CURLPP_LIBRARIES "curlpp" HINTS "/usr/lib/*" "/usr/lib64/*")
+
+IF(CURLPP_INCLUDE_DIRS AND CURLPP_LIBRARIES)
+ MESSAGE(STATUS "CurlPP libraries found at: ${CURLPP_LIBRARIES}")
+ MESSAGE(STATUS "CurlPP includes  found at: ${CURLPP_INCLUDE_DIRS}")
+ELSE()
+ MESSAGE(SEND_ERROR "Could not find cURLPP on your system")
+ENDIF(CURLPP_INCLUDE_DIRS AND CURLPP_LIBRARIES)
+
+INCLUDE_DIRECTORIES( "."  ${CURLPP_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
 
 add_executable(tmdbquery
  main.cpp
@@ -26,4 +43,4 @@ add_executable(tmdbquery
  tmdbpp/pagedcollection.h
 )
 
-target_link_libraries(tmdbquery curl curlpp)
+target_link_libraries(tmdbquery ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
