@@ -40,4 +40,17 @@ namespace tmdbpp {
        Collections c;
        return fetch(url,c);
     }
+
+    Keywords Search::keyword(const std::string & query,int page) {
+       std::stringstream ss;
+       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectKeyword+"?"+
+                Arg("api_key",api().key())+"&"+Arg("query",query);
+
+       if(page>0)
+           url+="&"+Arg("page",page);
+
+       Keywords k;
+       return fetch(url,k);
+    }
+
 }

@@ -23,7 +23,6 @@ int main(int, char **)
                 std::cerr << " >> '" << g.name() << "'" << std::endl;
             }
         }
-#endif
 
         tmdbpp::Companies c = api.search().company("fox");
         std::cerr << "+" << c.page() << "/" << c.total_pages() << "@" << c.total_results() << std::endl;
@@ -46,6 +45,21 @@ int main(int, char **)
                     std::cerr << p.title() << "|" << p.release_date() << std::endl;
                 }
             }
+        }
+
+#endif
+
+        {
+            int p=1;
+            tmdbpp::Keywords kws;
+            do {
+                kws=api.search().keyword("horror",p);
+                for(const auto n : kws.list()) {
+                    tmdbpp::Keyword k = api.get().keyword(n.id());
+                    std::cerr << " / / " << k.id() << "::" << k.name() << std::endl << " / / "
+                              << std::endl;
+                }
+            } while(p++<kws.total_pages());
         }
 
         return 0;

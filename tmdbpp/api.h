@@ -23,10 +23,12 @@ namespace tmdbpp {
         static const std::string MethodMovie;
         static const std::string MethodCollection;
         static const std::string MethodCompany;
+        static const std::string MethodKeyword;
 
         static const std::string ObjectCompany;
         static const std::string ObjectMovie;
         static const std::string ObjectCollection;
+        static const std::string ObjectKeyword;
 
 
         static Api & instance(const std::string & apiKey="")  {

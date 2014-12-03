@@ -5,7 +5,7 @@
 #include <tmdbpp/movie.h>
 #include <tmdbpp/collection.h>
 #include <tmdbpp/company.h>
-
+#include <tmdbpp/keyword.h>
 
 namespace tmdbpp {
 
@@ -18,6 +18,7 @@ namespace tmdbpp {
         Movie movie(int id);
         Collection collection(int id);
         Company company(int id);
+        Keyword keyword(int id);
 
     private:
     };
