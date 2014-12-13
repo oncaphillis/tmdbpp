@@ -202,6 +202,51 @@ namespace tmdbpp {
         std::string _o;
     };
 
+    class MediaSummary : public IdHolder {
+    private:
+        typedef IdHolder super;
+    public:
+        using super::super;
+
+        std::string title() const {
+            return ptree().get<std::string>("title","");
+        }
+        std::string poster_path() const {
+            return ptree().get<std::string>("poster_path","");
+        }
+        std::string release_date() const {
+            return ptree().get<std::string>("release_date","");
+        }
+        std::string backdrop_path() const {
+            return ptree().get<std::string>("backdrop_path","");
+        }
+
+    };
+
+    class Network : public IdHolder {
+    private:
+        typedef IdHolder super;
+    public:
+        using super::super;
+    private:
+    };
+
+    class SeasonSummary : public IdHolder {
+    private:
+        typedef IdHolder super;
+    public:
+        using super::super;
+    private:
+    };
+
+    class PersonSummary : public IdHolder {
+    private:
+        typedef IdHolder super;
+    public:
+        using super::super;
+    private:
+    };
+
     inline
     std::string operator+(const std::string &s,const Arg &a) {
         return s+(std::string)a;

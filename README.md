@@ -15,11 +15,13 @@ Supports
 * search().movie("title","language",page);
 * search().collection("name",page);
 * search().keyword("name",page)
+* search().tv("name",page);
 
 * get().movie(id)
 * get().collection(id)
 * get().company(id)
 * get().keyword(id)
+* get().tv(id)
 
 CMakefile and other configs are under developed-
   

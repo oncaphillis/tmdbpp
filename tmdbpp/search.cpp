@@ -35,8 +35,6 @@ namespace tmdbpp {
        if(page>0)
            url+="&"+Arg("page",page);
 
-       std::cerr << "(" << url << ")" << std::endl;
-
        Collections c;
        return fetch(url,c);
     }
@@ -51,6 +49,20 @@ namespace tmdbpp {
 
        Keywords k;
        return fetch(url,k);
+    }
+
+    TvSeriesCollection Search::tv(const std::string & query,int page) {
+       TvSeriesCollection coll;
+       std::stringstream ss;
+       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectTv+"?"+
+                Arg("api_key",api().key())+"&"+Arg("query",query);
+
+       if(page>0)
+           url+="&"+Arg("page",page);
+
+       std::cerr << "[" << url << "]" << std::endl;
+
+       return fetch(url,coll);
     }
 
 }

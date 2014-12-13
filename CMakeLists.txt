@@ -31,16 +31,17 @@ add_executable(tmdbquery
  tmdbpp/search.cpp
  tmdbpp/get.cpp
  tmdbpp/api.cpp
- tmdbpp/search.h
- tmdbpp/get.h
  tmdbpp/api.h
  tmdbpp/apiagent.h
- tmdbpp/util.h
+ tmdbpp/companies.h
+ tmdbpp/get.h
  tmdbpp/movie.h
  tmdbpp/movies.h
- tmdbpp/companies.h
- tmdbpp/movies.h
  tmdbpp/pagedcollection.h
+ tmdbpp/search.h
+ tmdbpp/tvseries.h
+ tmdbpp/tvseriescollection.h
+ tmdbpp/util.h
 )
 
 target_link_libraries(tmdbquery ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})

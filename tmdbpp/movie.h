@@ -5,25 +5,11 @@
 #include <list>
 
 namespace tmdbpp {
-    class MovieReleaseSummary : public IdHolder {
+    class MovieReleaseSummary : public MediaSummary {
     private:
-        typedef IdHolder super;
+        typedef MediaSummary super;
     public:
         using super::super;
-
-        std::string title() const {
-            return ptree().get<std::string>("title","");
-        }
-        std::string poster_path() const {
-            return ptree().get<std::string>("poster_path","");
-        }
-        std::string release_date() const {
-            return ptree().get<std::string>("release_date","");
-        }
-        std::string backdrop_path() const {
-            return ptree().get<std::string>("backdrop_path","");
-        }
-
     };
 
     class MovieSummary : public MovieReleaseSummary {

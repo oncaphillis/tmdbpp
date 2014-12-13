@@ -8,7 +8,7 @@
 #include <tmdbpp/companies.h>
 #include <tmdbpp/collections.h>
 #include <tmdbpp/keywords.h>
-
+#include <tmdbpp/tvseriescollection.h>
 #include <tmdbpp/apiagent.h>
 
 namespace tmdbpp {
@@ -24,7 +24,7 @@ namespace tmdbpp {
         Companies   company(const std::string &query,int page=-1);
         Collections collection(const std::string &query,int page=-1);
         Keywords    keyword(const std::string &query,int page=-1);
-
+        TvSeriesCollection tv(const std::string &query,int page=-1);
     };
 }
 

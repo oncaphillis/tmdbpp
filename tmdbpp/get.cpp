@@ -32,5 +32,13 @@ namespace tmdbpp {
         std::string url = Api::BaseUrl+Api::MethodKeyword+"/"+ss.str()+"?"+Arg("api_key",api().key());
         return fetch(url,k);
     }
+
+    TvSeries Get::tv(int id) {
+        TvSeries tv;
+        std::stringstream ss;
+        ss << id;
+        std::string url = Api::BaseUrl+Api::MethodTv+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        return fetch(url,tv);
+    }
 }
 

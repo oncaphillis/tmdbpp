@@ -3,6 +3,7 @@
 
 #include <tmdbpp/apiagent.h>
 #include <tmdbpp/movie.h>
+#include <tmdbpp/tvseries.h>
 #include <tmdbpp/collection.h>
 #include <tmdbpp/company.h>
 #include <tmdbpp/keyword.h>
@@ -15,6 +16,8 @@ namespace tmdbpp {
     public:
         Get(Api & api ) : super(api) {
         }
+
+        TvSeries tv(int id);
         Movie movie(int id);
         Collection collection(int id);
         Company company(int id);
