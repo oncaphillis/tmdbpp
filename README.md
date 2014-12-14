@@ -16,6 +16,7 @@ Supports
 * search().collection("name",page);
 * search().keyword("name",page)
 * search().tv("name",page);
+* search().tv().popular();
 
 * get().movie(id)
 * get().collection(id)

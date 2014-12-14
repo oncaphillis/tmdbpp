@@ -28,9 +28,12 @@ INCLUDE_DIRECTORIES( "."  ${CURLPP_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
 
 add_executable(tmdbquery
  main.cpp
- tmdbpp/search.cpp
- tmdbpp/get.cpp
  tmdbpp/api.cpp
+ tmdbpp/get.cpp
+ tmdbpp/search.cpp
+ tmdbpp/tvfilter.cpp
+
+ tmdbpp/tvfilter.h
  tmdbpp/api.h
  tmdbpp/apiagent.h
  tmdbpp/companies.h
@@ -39,6 +42,7 @@ add_executable(tmdbquery
  tmdbpp/movies.h
  tmdbpp/pagedcollection.h
  tmdbpp/search.h
+ tmdbpp/tvfilter.h
  tmdbpp/tvseries.h
  tmdbpp/tvseriescollection.h
  tmdbpp/util.h

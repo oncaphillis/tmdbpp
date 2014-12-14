@@ -15,6 +15,8 @@ namespace tmdbpp {
     const std::string Api::ObjectCollection = "/collection";
     const std::string Api::ObjectKeyword    = "/keyword";
     const std::string Api::ObjectTv         = "/tv";
+    const std::string Api::ObjectPopular    = "/popular";
+
 };
 
 

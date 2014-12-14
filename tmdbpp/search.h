@@ -10,6 +10,7 @@
 #include <tmdbpp/keywords.h>
 #include <tmdbpp/tvseriescollection.h>
 #include <tmdbpp/apiagent.h>
+#include <tmdbpp/tvfilter.h>
 
 namespace tmdbpp {
     class Api;
@@ -25,6 +26,9 @@ namespace tmdbpp {
         Collections collection(const std::string &query,int page=-1);
         Keywords    keyword(const std::string &query,int page=-1);
         TvSeriesCollection tv(const std::string &query,int page=-1);
+
+        TvFilter tv();
+
     };
 }
 

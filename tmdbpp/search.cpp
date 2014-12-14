@@ -52,17 +52,18 @@ namespace tmdbpp {
     }
 
     TvSeriesCollection Search::tv(const std::string & query,int page) {
-       TvSeriesCollection coll;
-       std::stringstream ss;
-       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectTv+"?"+
-                Arg("api_key",api().key())+"&"+Arg("query",query);
+        TvSeriesCollection coll;
+        std::stringstream ss;
+        std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectTv+"?"+
+                 Arg("api_key",api().key())+"&"+Arg("query",query);
 
-       if(page>0)
-           url+="&"+Arg("page",page);
+        if(page>0)
+            url+="&"+Arg("page",page);
 
-       std::cerr << "[" << url << "]" << std::endl;
-
-       return fetch(url,coll);
+        return fetch(url,coll);
     }
 
+    TvFilter Search::tv() {
+        return TvFilter(this->api());
+    }
 }

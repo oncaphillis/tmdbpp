@@ -16,11 +16,13 @@ int main(int, char **)
         tmdbpp::Movies m = api.search().movie("indiana jones","de",1);
         std::cerr << m.page() << "/" << m.total_pages() << "@" << m.total_results() << std::endl;
 
-        tmdbpp::TvSeriesCollection c = api.search().tv("breaking bad",1);
+        tmdbpp::TvSeriesCollection c = api.search().tv().popular();
 
-        if(c.list().size()>0) {
-            std::cerr << " @ " << c.list().front().id() << " <" << c.list().front().origin_countries().front() << ">" << std::endl;
-            std::cerr << " + " << api.get().tv(c.list().front().id()).languages().front() << std::endl;
+        for(const auto a : c.list()) {
+            std::cerr << a << std::endl
+                      << " @ @ @ @ @ @ @ " << std::endl
+                      << std::endl;
+
         }
 
 #if 0
