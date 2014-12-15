@@ -16,6 +16,9 @@ namespace tmdbpp {
     const std::string Api::ObjectKeyword    = "/keyword";
     const std::string Api::ObjectTv         = "/tv";
     const std::string Api::ObjectPopular    = "/popular";
+    const std::string Api::ObjectTopRated   = "/top_rated";
+    const std::string Api::ObjectAiringToday= "/airing_today";
+    const std::string Api::ObjectOnTheAir   = "/on_the_air";
 
 };
 

@@ -17,8 +17,8 @@ namespace tmdbpp {
         Get(Api & api ) : super(api) {
         }
 
-        TvSeries tv(int id);
-        Movie movie(int id);
+        TvSeries tv(int id,const std::string & lang="");
+        Movie movie(int id,const std::string & lang="");
         Collection collection(int id);
         Company company(int id);
         Keyword keyword(int id);

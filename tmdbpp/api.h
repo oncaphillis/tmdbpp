@@ -32,6 +32,9 @@ namespace tmdbpp {
         static const std::string ObjectKeyword;
         static const std::string ObjectTv;
         static const std::string ObjectPopular;
+        static const std::string ObjectTopRated;
+        static const std::string ObjectAiringToday;
+        static const std::string ObjectOnTheAir;
 
 
         static Api & instance(const std::string & apiKey="")  {

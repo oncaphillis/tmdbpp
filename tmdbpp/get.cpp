@@ -4,11 +4,15 @@
 #include <string>
 
 namespace tmdbpp {
-    Movie Get::movie(int id) {
+    Movie Get::movie(int id,const std::string & lang) {
         Movie m;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+"?"+Arg("api_key",api().key());
+
+        if(!lang.empty())
+            url+="&"+Arg("language",lang);
+
         return fetch(url,m);
     }
     Collection Get::collection(int id) {
@@ -33,11 +37,15 @@ namespace tmdbpp {
         return fetch(url,k);
     }
 
-    TvSeries Get::tv(int id) {
+    TvSeries Get::tv(int id,const std::string & lang) {
         TvSeries tv;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodTv+"/"+ss.str()+"?"+Arg("api_key",api().key());
+
+        if(!lang.empty())
+            url+="&"+Arg("language",lang);
+
         return fetch(url,tv);
     }
 }

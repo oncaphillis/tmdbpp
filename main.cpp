@@ -11,20 +11,34 @@ int main(int, char **)
 {
     try
     {
+
         tmdbpp::Api &api(tmdbpp::Api::instance());
 
         tmdbpp::Movies m = api.search().movie("indiana jones","de",1);
         std::cerr << m.page() << "/" << m.total_pages() << "@" << m.total_results() << std::endl;
 
-        tmdbpp::TvSeriesCollection c = api.search().tv().popular();
 
-        for(const auto a : c.list()) {
-            std::cerr << a << std::endl
-                      << " @ @ @ @ @ @ @ " << std::endl
-                      << std::endl;
+        tmdbpp::TvSeriesCollection c;
 
-        }
+        int p=1;
+        int n=1;
+        do {
+            c= api.search().tv().airing_today("de",p++);
 
+            for(const auto a : c.list()) {
+                std::cerr << "#" << n++ << " [" <<  a.name() << "] " << a.popularity() << " "
+                          << a.vote_average() << "/" << a.vote_count() << std::endl
+                          << std::endl;
+
+                std::cerr << api.get().tv(a.id(),"de").overview() << std::endl
+                          << " ----- "
+                          << std::endl;
+
+
+            }
+        } while(!c.list().empty());
+
+        return 0;
 #if 0
         for(const auto n : m.list()) {
             std::cerr << "'" << n.title() << "'" << std::endl;

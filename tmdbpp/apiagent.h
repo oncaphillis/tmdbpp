@@ -9,6 +9,9 @@ namespace tmdbpp {
 
     class Api;
 
+    // The base class for every class that likes to access the TMDBB
+    // Api
+
     class ApiAgent {
     private:
     public:
