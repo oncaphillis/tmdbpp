@@ -9,7 +9,15 @@ namespace tmdbpp {
     private:
         typedef NameIdHolder super;
     public:
-        using NameIdHolder::NameIdHolder;
+        CollectionSummary() : super(){
+        }
+
+        CollectionSummary(std::istream & is) : super(is) {
+        }
+        
+        CollectionSummary(const boost::property_tree::ptree &pt) : super(pt) {
+        }
+
         std::string backdrop_path() const {
             return ptree().get<std::string>("backdrop_path","");
         }
@@ -22,16 +30,22 @@ namespace tmdbpp {
     private:
         typedef MovieReleaseSummary super;
     public:
-        using MovieReleaseSummary::MovieReleaseSummary;
+        Part() : super() {
+        }
+        Part(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Part(std::istream & is ) : super(is) {
+        }
     };
 
     class Collection : public CollectionSummary {
     private:
         typedef CollectionSummary super;
     public:
+        
         Collection() : super() {
-
         }
+
         Collection(std::istream & is) : super(is) {
 
         }

@@ -1,8 +1,6 @@
 #ifndef TMDBPP_WIN_WGET_H
 #define TMDBPP_WIN_WGET_H
 
-#include <winsock2.h>
-#include <Winhttp.h>
 #include <string>
 
 namespace tmdbpp {
@@ -16,7 +14,7 @@ namespace tmdbpp {
     private:
         WGet();
         ~WGet();
-        HINTERNET _hsession;
+
     };
     
 };

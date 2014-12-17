@@ -9,7 +9,15 @@ namespace tmdbpp {
     private:
         typedef JSonMapper super;
     public:
-        using JSonMapper::JSonMapper;
+        PagedCollectionBase() : super() {
+        }
+        PagedCollectionBase(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        PagedCollectionBase(std::istream & is) : super(is) {
+        }
+        PagedCollectionBase(const PagedCollectionBase & pc) : super(pc) {
+        }
+
         int page() const {
             return this->ptree().get<int>("page",0);
         }
@@ -20,6 +28,11 @@ namespace tmdbpp {
 
         int total_results() const {
             return this->ptree().get<int>("total_results",0);
+        }
+        friend 
+        void swap(PagedCollectionBase & p0, PagedCollectionBase & p1) {
+            using std::swap;
+            swap(static_cast<super &>(p0), static_cast<super &>(p1));
         }
     };
 

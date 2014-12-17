@@ -9,7 +9,13 @@ namespace tmdbpp {
     private:
         typedef CompanySummary super;
     public:
-        using super::super;
+        CompanyInfo() : super() {
+        }
+        CompanyInfo(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        CompanyInfo(std::istream & is ) : super(is) {
+        }
+
     private:
         std::string logo_path() const {
             return ptree().get<std::string>("logo_path","");
@@ -20,7 +26,12 @@ namespace tmdbpp {
     private:
         typedef CompanyInfo super;
     public:
-        using super::super;
+        Company() : super() {
+        }
+        Company(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Company(std::istream & is ) : super(is) {
+        }
 
         std::string description() const {
             return ptree().get<std::string>("description","");

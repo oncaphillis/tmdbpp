@@ -3,11 +3,11 @@ project(tmdbpp)
 cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
-find_package(Boost 1.57.0 )
+find_package(Boost)
 
-   if(Boost_FOUND)
-      include_directories(${Boost_INCLUDE_DIRS})
-   endif()
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif(Boost_FOUND)
 
 IF(UNIX)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
@@ -64,4 +64,12 @@ add_executable(tmdbquery
 )
 
 
-target_link_libraries(tmdbquery ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
+
+
+IF(WIN32)
+ target_link_libraries(tmdbquery winhttp)
+ENDIF(WIN32)
+
+IF(UNIX)
+ target_link_libraries(tmdbquery ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
+ENDIF(UNIX)

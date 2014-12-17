@@ -1,5 +1,7 @@
 #include <tmdbpp/win_wget.h>
 
+#include <winsock2.h>
+#include <Winhttp.h>
 #include <windows.h>
 #include <iostream>
 #include <fstream>
@@ -8,6 +10,7 @@
 #include <memory>
 
 namespace tmdbpp {
+    static HINTERNET _hsession = NULL;
     WGet & WGet::instance() {
         static WGet g;
         return g;
@@ -104,7 +107,8 @@ namespace tmdbpp {
         return os;
     }
     
-    WGet::WGet() : _hsession(NULL){
+    WGet::WGet()  {
+        _hsession = NULL;
         // Use WinHttpOpen to obtain a session handle.
         _hsession = WinHttpOpen( L"WGet Session/1.0",
                                  WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
@@ -115,9 +119,12 @@ namespace tmdbpp {
             throw std::runtime_error("unable to open http client session");
     }
     
-    ~WGet::WGet() {
+    WGet::~WGet() {
         if(_hsession!=NULL)
             WinHttpCloseHandle(_hsession);
+ 
+        _hsession = NULL;
+
     }
 }
 

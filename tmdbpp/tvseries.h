@@ -9,8 +9,7 @@ namespace tmdbpp {
     private:
         typedef MediaSummary super;
     public:
-        using MediaSummary::MediaSummary;
-
+ 
         TvSeriesSummary() : super() {
         }
 

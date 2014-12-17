@@ -10,8 +10,8 @@ namespace tmdbpp {
     private:
         typedef ApiAgent super;
     public:
-        //using super::super;
-        using ApiAgent::ApiAgent;
+        TvFilter(Api &a ) : super(a) {
+        }
 
         TvSeriesCollection popular(const std::string & language,int page=1);
         TvSeriesCollection popular(int page=1);

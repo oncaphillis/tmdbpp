@@ -9,7 +9,12 @@ namespace tmdbpp {
     private:
         typedef PagedCollection<TvSeriesSummary> super;
     public:
-        using super::super;
+        TvSeriesCollection () : super() {
+        }
+        TvSeriesCollection (const boost::property_tree::ptree & p) : super(p) {
+        }        
+        TvSeriesCollection (std::istream & is ) : super(is) {
+        }
     private:
     };
 }

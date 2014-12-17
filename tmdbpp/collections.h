@@ -9,7 +9,13 @@ namespace tmdbpp {
     private:
         typedef PagedCollection super;
     public:
-        using PagedCollection<CollectionSummary>::PagedCollection;
+
+        Collections() : super() {
+        }
+        Collections(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Collections(std::istream & is ) : super(is) {
+        }
     };
 }
 #endif // COLLECTIONS_H

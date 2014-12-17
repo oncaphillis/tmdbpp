@@ -10,7 +10,12 @@ namespace tmdbpp {
     private:
         typedef PagedCollection<MovieSummary> super;
     public:
-        using PagedCollection<MovieSummary>::PagedCollection;
+        Movies() : super() {
+        }
+        Movies(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Movies(std::istream & is ) : super(is) {
+        }
     private:
     };
 }

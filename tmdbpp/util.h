@@ -2,7 +2,13 @@
 #define TMDBPP_UTIL_H
 
 #include <set>
+#include <memory>
+
+#ifdef _WIN32
+#else
 #include <curlpp/cURLpp.hpp>
+#endif
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -110,13 +116,24 @@ namespace tmdbpp {
         typedef JSonMapper super;
 
     public:
-        using JSonMapper::JSonMapper;
+        IdHolder() : super() {
+        }
+
+        IdHolder(const boost::property_tree::ptree & p) : super(p) {
+        }
+        IdHolder(std::istream & is ) : super(is) {
+        }
 
         const int  id() const {
             return ptree().get<int>("id");
         }
     private:
-        int _id;
+        friend
+        void swap(IdHolder &i0, IdHolder & i1) {
+            using std::swap;
+            swap(static_cast<super &>(i0), static_cast<super &>(i1));
+        }
+         int _id;
     };
 
     class NameHolder : public JSonMapper {
@@ -124,7 +141,13 @@ namespace tmdbpp {
         typedef JSonMapper super;
     public:
         
-        using JSonMapper::JSonMapper;
+        NameHolder() : super() {
+        }
+        NameHolder(const boost::property_tree::ptree &p) : super(p) {
+        }
+
+        NameHolder(std::istream & is ) : super(is) {
+        }
 
         std::string name() const {
             return ptree().get<std::string>("name","");
@@ -135,7 +158,16 @@ namespace tmdbpp {
     private:
         typedef JSonMapper super;
     public:
-        using JSonMapper::JSonMapper;
+        NameIdHolder() : super() {
+        }
+        
+        NameIdHolder(const boost::property_tree::ptree & p) : super(p) {
+
+        }
+
+        NameIdHolder(std::istream & is) : super(is)  {
+
+        }
 
         std::string name() const {
             return ptree().get<std::string>("name","");
@@ -149,7 +181,12 @@ namespace tmdbpp {
     private:
         typedef NameHolder super;
     public:
-        using NameHolder::NameHolder;
+        Country() : super() {
+        }
+        Country(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Country(std::istream & is ) : super(is) {
+        }
         std::string iso_3166_1() const {
             return  ptree().get<std::string>("iso_3166_1","");
         }
@@ -160,7 +197,12 @@ namespace tmdbpp {
     private:
         typedef NameHolder super;
     public:
-        using NameHolder::NameHolder;
+        Language() : super() {
+        }
+        Language(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Language(std::istream & is ) : super(is) {
+        }
 
         std::string iso_639_1() const {
             return  ptree().get<std::string>("iso_639_1","");
@@ -172,21 +214,39 @@ namespace tmdbpp {
     private:
         typedef NameIdHolder super;
     public:
-        using NameIdHolder::NameIdHolder;
-    };
+        CompanySummary() : super() {
+        }
+        CompanySummary(const boost::property_tree::ptree & p) : super(p) {
+        }
+        CompanySummary(std::istream & is) : super(is) {
+        }
+     };
 
     class Genre : public NameIdHolder {
     private:
         typedef NameIdHolder super;
     public:
-        using NameIdHolder::NameIdHolder;
+        Genre() : super() {
+        }
+
+        Genre(const boost::property_tree::ptree & p) : super(p) {
+        }
     };
 
     class Configuration : public JSonMapper {
     private:
         typedef JSonMapper super;
     public:
-        using JSonMapper::JSonMapper;
+        
+        Configuration() : super() {
+        }
+        
+        Configuration(const boost::property_tree::ptree & p) : super(p) {
+        }
+        
+        Configuration(std::istream & is) : super(is) {
+        }
+
     private:
     };
 
@@ -196,7 +256,12 @@ namespace tmdbpp {
         Arg(const std::string & name,const T & value)  {
             std::stringstream ss;
             ss << value;
-            _o = name+"="+curlpp::escape(ss.str());
+#ifdef _WIN32
+            // WinHttpClient takes care of argument escaping
+            _o = name + "=" + ss.str();
+#else
+            _o = name + "=" + curlpp::escape(ss.str());
+#endif
         }
 
         operator std::string() const {
@@ -210,7 +275,12 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using IdHolder::IdHolder;
+        MediaSummary() : super() {
+        }
+        MediaSummary(const boost::property_tree::ptree & p) : super(p) {
+        }
+        MediaSummary(std::istream & is ) : super(is) {
+        }
 
         std::string title() const {
             return ptree().get<std::string>("title","");
@@ -224,6 +294,11 @@ namespace tmdbpp {
         std::string backdrop_path() const {
             return ptree().get<std::string>("backdrop_path","");
         }
+        friend
+        void swap(MediaSummary & m0, MediaSummary & m1) {
+            using std::swap;
+            swap(static_cast<super&>(m0), static_cast<super&>(m1));
+        }
 
     };
 
@@ -231,15 +306,22 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using IdHolder::IdHolder;
+        Network(const boost::property_tree::ptree & p) : super(p) {
+        }
     private:
+
     };
 
     class SeasonSummary : public IdHolder {
     private:
         typedef IdHolder super;
     public:
-        using IdHolder::IdHolder;
+        SeasonSummary() : super() {
+        }
+        SeasonSummary(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        SeasonSummary(std::istream & is ) : super(is) {
+        }
     private:
     };
 
@@ -247,7 +329,12 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using IdHolder::IdHolder;
+        PersonSummary() : super() {
+        }
+        PersonSummary(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        PersonSummary(std::istream & is ) : super(is) {
+        }
     private:
     };
 

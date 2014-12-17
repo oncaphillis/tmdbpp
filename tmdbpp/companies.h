@@ -10,12 +10,17 @@ namespace tmdbpp {
     private:
         typedef PagedCollection<CompanyInfo> super;
     public:
-        using super::super;
-
-        Companies & operator=(Companies c) {
-            swap(*this,c);
+        Companies() : super() {
         }
-
+        Companies(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        Companies(std::istream & is ) : super(is) {
+        }
+        Companies & operator=(Companies c) {
+         
+            swap(*this,c);
+            return *this;
+        }
     private:
         friend
         void swap(Companies & c0,Companies &c1 ) {

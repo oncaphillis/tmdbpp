@@ -9,14 +9,6 @@
 #include <string>
 #include <map>
 
-
-#if 0
-#include <curlpp/cURLpp.hpp>
-#include <curlpp/Easy.hpp>
-#include <curlpp/Options.hpp>
-#endif
-
-
 namespace tmdbpp {
 
     class Api {

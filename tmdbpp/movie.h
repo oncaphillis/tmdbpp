@@ -9,14 +9,26 @@ namespace tmdbpp {
     private:
         typedef MediaSummary super;
     public:
-        using MediaSummary::MediaSummary;
+        MovieReleaseSummary() : super() {
+        }
+        MovieReleaseSummary(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        MovieReleaseSummary(std::istream & is ) : super(is) {
+        }
+
     };
 
     class MovieSummary : public MovieReleaseSummary {
     private:
         typedef MovieReleaseSummary super;
     public:
-        using MovieReleaseSummary::MovieReleaseSummary;
+        
+        MovieSummary() : super() {
+        }
+        MovieSummary(const boost::property_tree::ptree & p) : super(p) {
+        }        
+        MovieSummary(std::istream & is ) : super(is) {
+        }
 
         bool adult() {
             return ptree().get<bool>("adult",false);
@@ -48,8 +60,10 @@ namespace tmdbpp {
         Movie() : super() {
         }
 
-        Movie(const boost::property_tree::ptree & pt) : super(pt) {
-            setup();
+        Movie(const boost::property_tree::ptree & p) : super(p) {
+        }        
+
+        Movie(std::istream & is ) : super(is) {
         }
 
         Movie(Movie && m) : super(m) {
@@ -60,9 +74,6 @@ namespace tmdbpp {
             setup();
         }
 
-        Movie(std::istream & is) : super(is) {
-            setup();
-        }
 
         std::string belongs_to_collection() const {
             return ptree().get<std::string>("belongs_to_collection","");

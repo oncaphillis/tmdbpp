@@ -2,6 +2,7 @@
 #define APIAGENT_H
 
 #ifdef _WIN32
+#include <tmdbpp/win_wget.h>
 #else
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
@@ -25,6 +26,10 @@ namespace tmdbpp {
 
         template<class T>
         T & fetch(const std::string & url,T & t) {
+#ifdef _WIN32
+            std::string s=WGet::instance().get(url);
+            t = T(std::stringstream(s));
+#else
             std::stringstream ss;
             curlpp::options::Url myUrl(url);
             curlpp::Easy myRequest;
@@ -32,6 +37,7 @@ namespace tmdbpp {
             myRequest.setOpt(curlpp::options::WriteStream(&ss));
             myRequest.perform();
             t = T(ss);
+#endif
             return t;
         }
 
