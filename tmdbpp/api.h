@@ -1,15 +1,20 @@
 #ifndef TMDBPP_API_H
 #define TMDBPP_API_H
 
-#include <string>
 #include <tmdbpp/util.h>
 #include <tmdbpp/search.h>
 #include <tmdbpp/get.h>
 #include <tmdbpp/apiagent.h>
 
+#include <string>
+#include <map>
+
+
+#if 0
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
+#endif
 
 
 namespace tmdbpp {

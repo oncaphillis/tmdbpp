@@ -3,7 +3,13 @@ project(tmdbpp)
 cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
+find_package(Boost 1.57.0 )
 
+   if(Boost_FOUND)
+      include_directories(${Boost_INCLUDE_DIRS})
+   endif()
+
+IF(UNIX)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 FIND_PACKAGE(CURL)
@@ -24,7 +30,15 @@ ELSE()
  MESSAGE(SEND_ERROR "Could not find cURLPP on your system")
 ENDIF(CURLPP_INCLUDE_DIRS AND CURLPP_LIBRARIES)
 
-INCLUDE_DIRECTORIES( "."  ${CURLPP_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES( ${CURLPP_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
+ENDIF(UNIX)
+
+IF(WIN32)
+ SET(WINSRC tmdbpp/win_wget.cpp tmdbpp/win_wget.h )
+ENDIF(WIN32)
+
+
+INCLUDE_DIRECTORIES( "." )
 
 add_executable(tmdbquery
  main.cpp
@@ -46,6 +60,8 @@ add_executable(tmdbquery
  tmdbpp/tvseries.h
  tmdbpp/tvseriescollection.h
  tmdbpp/util.h
+ ${WINSRC}
 )
+
 
 target_link_libraries(tmdbquery ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})

@@ -1,9 +1,13 @@
 #ifndef APIAGENT_H
 #define APIAGENT_H
 
+#ifdef _WIN32
+#else
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
+#endif
+#include <string>
 
 namespace tmdbpp {
 

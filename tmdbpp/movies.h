@@ -10,7 +10,7 @@ namespace tmdbpp {
     private:
         typedef PagedCollection<MovieSummary> super;
     public:
-        using super::super;
+        using PagedCollection<MovieSummary>::PagedCollection;
     private:
     };
 }

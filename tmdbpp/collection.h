@@ -9,7 +9,7 @@ namespace tmdbpp {
     private:
         typedef NameIdHolder super;
     public:
-        using super::super;
+        using NameIdHolder::NameIdHolder;
         std::string backdrop_path() const {
             return ptree().get<std::string>("backdrop_path","");
         }
@@ -22,7 +22,7 @@ namespace tmdbpp {
     private:
         typedef MovieReleaseSummary super;
     public:
-        using super::super;
+        using MovieReleaseSummary::MovieReleaseSummary;
     };
 
     class Collection : public CollectionSummary {

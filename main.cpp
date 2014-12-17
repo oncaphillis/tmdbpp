@@ -88,17 +88,10 @@ int main(int, char **)
 
         return 0;
     }
-    catch( curlpp::RuntimeError &e )
+    catch( std::exception &e )
     {
-        std::cout << e.what() << std::endl;
-    }
-    catch( curlpp::LogicError &e )
-    {
-        std::cout << e.what() << std::endl;
-    }
-    catch( std::exception & e) {
         std::cout << e.what() << std::endl;
     }
 
-  return 0;
+    return 0;
 }

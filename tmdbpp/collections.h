@@ -9,7 +9,7 @@ namespace tmdbpp {
     private:
         typedef PagedCollection super;
     public:
-        using super::super;
+        using PagedCollection<CollectionSummary>::PagedCollection;
     };
 }
 #endif // COLLECTIONS_H

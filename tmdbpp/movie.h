@@ -9,14 +9,14 @@ namespace tmdbpp {
     private:
         typedef MediaSummary super;
     public:
-        using super::super;
+        using MediaSummary::MediaSummary;
     };
 
     class MovieSummary : public MovieReleaseSummary {
     private:
         typedef MovieReleaseSummary super;
     public:
-        using super::super;
+        using MovieReleaseSummary::MovieReleaseSummary;
 
         bool adult() {
             return ptree().get<bool>("adult",false);

@@ -110,7 +110,8 @@ namespace tmdbpp {
         typedef JSonMapper super;
 
     public:
-        using super::super;
+        using JSonMapper::JSonMapper;
+
         const int  id() const {
             return ptree().get<int>("id");
         }
@@ -122,7 +123,9 @@ namespace tmdbpp {
     private:
         typedef JSonMapper super;
     public:
-        using super::super;
+        
+        using JSonMapper::JSonMapper;
+
         std::string name() const {
             return ptree().get<std::string>("name","");
         }
@@ -132,7 +135,8 @@ namespace tmdbpp {
     private:
         typedef JSonMapper super;
     public:
-        using super::super;
+        using JSonMapper::JSonMapper;
+
         std::string name() const {
             return ptree().get<std::string>("name","");
         }
@@ -145,7 +149,7 @@ namespace tmdbpp {
     private:
         typedef NameHolder super;
     public:
-        using super::super;
+        using NameHolder::NameHolder;
         std::string iso_3166_1() const {
             return  ptree().get<std::string>("iso_3166_1","");
         }
@@ -156,7 +160,7 @@ namespace tmdbpp {
     private:
         typedef NameHolder super;
     public:
-        using super::super;
+        using NameHolder::NameHolder;
 
         std::string iso_639_1() const {
             return  ptree().get<std::string>("iso_639_1","");
@@ -168,21 +172,21 @@ namespace tmdbpp {
     private:
         typedef NameIdHolder super;
     public:
-        using super::super;
+        using NameIdHolder::NameIdHolder;
     };
 
     class Genre : public NameIdHolder {
     private:
         typedef NameIdHolder super;
     public:
-        using super::super;
+        using NameIdHolder::NameIdHolder;
     };
 
     class Configuration : public JSonMapper {
     private:
         typedef JSonMapper super;
     public:
-        using super::super;
+        using JSonMapper::JSonMapper;
     private:
     };
 
@@ -206,7 +210,7 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using super::super;
+        using IdHolder::IdHolder;
 
         std::string title() const {
             return ptree().get<std::string>("title","");
@@ -227,7 +231,7 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using super::super;
+        using IdHolder::IdHolder;
     private:
     };
 
@@ -235,7 +239,7 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using super::super;
+        using IdHolder::IdHolder;
     private:
     };
 
@@ -243,7 +247,7 @@ namespace tmdbpp {
     private:
         typedef IdHolder super;
     public:
-        using super::super;
+        using IdHolder::IdHolder;
     private:
     };
 

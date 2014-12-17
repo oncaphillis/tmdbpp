@@ -9,8 +9,7 @@ namespace tmdbpp {
     private:
         typedef JSonMapper super;
     public:
-        using super::super;
-
+        using JSonMapper::JSonMapper;
         int page() const {
             return this->ptree().get<int>("page",0);
         }
