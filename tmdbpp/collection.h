@@ -26,9 +26,9 @@ namespace tmdbpp {
         }
     };
 
-    class Part : public MovieReleaseSummary  {
+    class Part : public MediaReleaseSummary  {
     private:
-        typedef MovieReleaseSummary super;
+        typedef MediaReleaseSummary super;
     public:
         Part() : super() {
         }

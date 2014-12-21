@@ -13,79 +13,32 @@ int main(int, char **)
     {
 
         tmdbpp::Api &api(tmdbpp::Api::instance());
-
-        tmdbpp::Movies m = api.search().movie("indiana jones","de",1);
-        std::cerr << m.page() << "/" << m.total_pages() << "@" << m.total_results() << std::endl;
-
-
-        tmdbpp::TvSeriesCollection c;
-
         int p=1;
-        int n=1;
-        do {
-            c= api.search().tv().airing_today("de",p++);
+        while(true) {
+            tmdbpp::Persons persons = api.search().person("kevin bacon",p++);
+            if(persons.empty())
+                break;
 
-            for(const auto a : c.list()) {
-                std::cerr << "#" << n++ << " [" <<  a.name() << "] " << a.popularity() << " "
-                          << a.vote_average() << "/" << a.vote_count() << std::endl
-                          << std::endl;
+            std::cerr << persons.page() << "/" << persons.total_pages() << "@" << persons.total_results() << std::endl;
+            for(const auto & p : persons.list()) {
+                std::cerr << p.name() << std::endl;
+                auto pp = api.get().person(p.id());
+                std::cerr << pp.name() << " -- " << pp.also_known_as() << " -- " << pp.birthday() << std::endl;
+                auto cr = api.search().person().movie_credits(p.id());
 
-                std::cerr << api.get().tv(a.id(),"de").overview() << std::endl
-                          << " ----- "
-                          << std::endl;
-
-
-            }
-        } while(!c.list().empty());
-
-        return 0;
-#if 0
-        for(const auto n : m.list()) {
-            std::cerr << "'" << n.title() << "'" << std::endl;
-            tmdbpp::Movie m = api.get().movie(n.id());
-            for(const auto g : m.genres()) {
-                std::cerr << " >> '" << g.name() << "'" << std::endl;
-            }
-        }
-
-        tmdbpp::Companies c = api.search().company("fox");
-        std::cerr << "+" << c.page() << "/" << c.total_pages() << "@" << c.total_results() << std::endl;
-
-        for(const auto n : c.list()) {
-            std::cerr << "**'" << n.name() << "'**" << std::endl;
-            std::cerr << " -- " << std::endl << api.get().company(n.id()).homepage() << std::endl
-                      << " -- " << std::endl;
-        }
-
-        {
-            tmdbpp::Collections c = api.search().collection("fox");
-            std::cerr << c.page() << "/" << c.total_pages() << "@" << c.total_results() << std::endl;
-
-            for(const auto n : c.list()) {
-                std::cerr << "'" << n.name() << "'" << std::endl;
-                auto c = api.get().collection(n.id());
-                std::cerr << c << std::endl;
-                for(auto p : c.parts()) {
-                    std::cerr << p.title() << "|" << p.release_date() << std::endl;
+                std::cerr << "<<" << std::endl
+                          << cr.as_cast().size() << "::" << cr.as_crew().size()
+                          << std::endl
+                          << ">>" << std::endl;
+                for(auto c : cr.as_cast()) {
+                    std::cerr << c.title() << "::" << c.character() << "@" << c.media_id() << std::endl;
+                    auto ccc = api.search().movie().credits(c.media_id());
+                    for(auto cc : ccc.as_cast() ) {
+                        std::cerr << " >> " << cc.name() << " " << cc.character() << std::endl;
+                    }
                 }
-            }
+             }
         }
-
-#endif
-
-        {
-            int p=1;
-            tmdbpp::Keywords kws;
-            do {
-                kws=api.search().keyword("horror",p);
-                for(const auto n : kws.list()) {
-                    tmdbpp::Keyword k = api.get().keyword(n.id());
-                    std::cerr << " / / " << k.id() << "::" << k.name() << std::endl << " / / "
-                              << std::endl;
-                }
-            } while(p++<kws.total_pages());
-        }
-
         return 0;
     }
     catch( std::exception &e )

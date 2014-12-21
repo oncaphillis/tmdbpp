@@ -2,6 +2,7 @@
 #define TMDBPP_TVSERIES_H
 
 #include <tmdbpp/util.h>
+#include <tmdbpp/person.h>
 
 namespace tmdbpp {
 
@@ -148,7 +149,7 @@ namespace tmdbpp {
             return _networks;
         }
 
-        const std::list<PersonSummary> & created_bys() const {
+        const std::list<PersonInfo> & created_bys() const {
             return _created_bys;
         }
 
@@ -208,7 +209,7 @@ namespace tmdbpp {
 
         std::list<Genre>          _genres;
         std::list<Network>        _networks;
-        std::list<PersonSummary>  _created_bys;
+        std::list<PersonInfo>  _created_bys;
         std::list<SeasonSummary>  _seasons;
         std::list<std::string>    _languages;
         std::list<CompanySummary> _production_companies;

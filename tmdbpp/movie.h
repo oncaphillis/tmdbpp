@@ -5,72 +5,83 @@
 #include <list>
 
 namespace tmdbpp {
-    class MovieReleaseSummary : public MediaSummary {
+    class MediaReleaseSummary : public MediaSummary {
     private:
         typedef MediaSummary super;
     public:
-        MovieReleaseSummary() : super() {
+        MediaReleaseSummary() : super() {
         }
-        MovieReleaseSummary(const boost::property_tree::ptree & p) : super(p) {
+        MediaReleaseSummary(const boost::property_tree::ptree & p) : super(p) {
         }        
-        MovieReleaseSummary(std::istream & is ) : super(is) {
+        MediaReleaseSummary(std::istream & is ) : super(is) {
         }
-
+    private:
+        friend
+        void swap(MediaReleaseSummary & m0, MediaReleaseSummary & m1) {
+            using std::swap;
+            swap(static_cast<super&>(m0), static_cast<super&>(m1));
+        }
     };
 
-    class MovieSummary : public MovieReleaseSummary {
+    class MediaInfo : public MediaReleaseSummary {
     private:
-        typedef MovieReleaseSummary super;
+        typedef MediaReleaseSummary super;
     public:
         
-        MovieSummary() : super() {
+        MediaInfo() : super() {
         }
-        MovieSummary(const boost::property_tree::ptree & p) : super(p) {
+        MediaInfo(const boost::property_tree::ptree & p) : super(p) {
         }        
-        MovieSummary(std::istream & is ) : super(is) {
+        MediaInfo(std::istream & is ) : super(is) {
         }
-
         bool adult() {
             return ptree().get<bool>("adult",false);
         }
-
         std::string original_title() const {
             return ptree().get<std::string>("original_title","");
         }
-
         float popularity() const {
             return ptree().get<float>("popularity",0.0);
         }
-
         float vote_average() const {
             return ptree().get<float>("vote_average",0.0);
         }
-
+        int vote_count() const {
+            return ptree().get<int>("vote_count",0);
+        }
+        bool video() const {
+            return ptree().get<bool>("video",false);
+        }
     private:
+        friend
+        void swap(MediaInfo & m0, MediaInfo & m1) {
+            using std::swap;
+            swap(static_cast<super&>(m0), static_cast<super&>(m1));
+        }
     };
 
-    class Movie : public MovieSummary {
+    class Media : public MediaInfo {
 
     private:
 
-        typedef MovieSummary super;
+        typedef MediaInfo super;
 
     public:
 
-        Movie() : super() {
+        Media() : super() {
         }
 
-        Movie(const boost::property_tree::ptree & p) : super(p) {
+        Media(const boost::property_tree::ptree & p) : super(p) {
         }        
 
-        Movie(std::istream & is ) : super(is) {
+        Media(std::istream & is ) : super(is) {
         }
 
-        Movie(Movie && m) : super(m) {
+        Media(Media && m) : super(m) {
             swap(*this,m);
         }
 
-        Movie(const Movie & m) : super(m) {
+        Media(const Media & m) : super(m) {
             setup();
         }
 
@@ -134,14 +145,14 @@ namespace tmdbpp {
             return _production_countries;
         }
 
-        Movie & operator=(Movie m) {
+        Media & operator=(Media m) {
             swap(*this,m);
             return *this;
         }
 
     private:
 
-        friend void swap(Movie & m0,Movie & m1) {
+        friend void swap(Media & m0,Media & m1) {
             using std::swap;
 
             swap(static_cast<super &>(m0),static_cast<super &>(m1));
@@ -169,11 +180,15 @@ namespace tmdbpp {
                 _production_companies.push_back(CompanySummary(n.second));
             }
         }
-        std::list<Genre>    _genres;
-        std::list<Country>  _production_countries;
-        std::list<Language> _spoken_languages;
+        std::list<Genre>           _genres;
+        std::list<Country>         _production_countries;
+        std::list<Language>        _spoken_languages;
         std::list<CompanySummary>  _production_companies;
     };
+
+    typedef MediaSummary MovieSummary;
+    typedef Media        Movie;
+
 }
 
 #endif // TMDBPP_MOVIE_H

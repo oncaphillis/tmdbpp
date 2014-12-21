@@ -18,10 +18,12 @@ namespace tmdbpp {
         }
 
         TvSeries tv(int id,const std::string & lang="");
-        Movie movie(int id,const std::string & lang="");
+        Media movie(int id,const std::string & lang="");
         Collection collection(int id);
         Company company(int id);
         Keyword keyword(int id);
+        Person person(int id);
+
 
     private:
     };

@@ -57,7 +57,7 @@ namespace tmdbpp {
 
         const boost::property_tree::ptree & ptree() const {
             if(_up_ptree.get()==NULL)
-                throw std::runtime_error("illegal access to invalit ptree");
+                throw std::runtime_error("illegal access to invalid ptree");
             return *_up_ptree;
         }
 
@@ -282,6 +282,9 @@ namespace tmdbpp {
         MediaSummary(std::istream & is ) : super(is) {
         }
 
+        std::string media_type() const {
+            return ptree().get<std::string>("media_type","movie");
+        }
         std::string title() const {
             return ptree().get<std::string>("title","");
         }
@@ -294,6 +297,7 @@ namespace tmdbpp {
         std::string backdrop_path() const {
             return ptree().get<std::string>("backdrop_path","");
         }
+    private:
         friend
         void swap(MediaSummary & m0, MediaSummary & m1) {
             using std::swap;
@@ -325,18 +329,7 @@ namespace tmdbpp {
     private:
     };
 
-    class PersonSummary : public IdHolder {
-    private:
-        typedef IdHolder super;
-    public:
-        PersonSummary() : super() {
-        }
-        PersonSummary(const boost::property_tree::ptree & p) : super(p) {
-        }        
-        PersonSummary(std::istream & is ) : super(is) {
-        }
-    private:
-    };
+
 
     inline
     std::string operator+(const std::string &s,const Arg &a) {

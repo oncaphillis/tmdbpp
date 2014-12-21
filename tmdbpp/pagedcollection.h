@@ -70,6 +70,10 @@ namespace tmdbpp {
             return _list;
         }
 
+        bool empty() const {
+            return list().empty();
+        }
+
     private:
 
         void setup() {

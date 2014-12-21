@@ -10,7 +10,7 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 IF(UNIX)
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-ggdb -std=c++11 ${CMAKE_CXX_FLAGS}")
 
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
@@ -45,16 +45,23 @@ add_executable(tmdbquery
  tmdbpp/api.cpp
  tmdbpp/get.cpp
  tmdbpp/search.cpp
+ tmdbpp/moviefilter.cpp
  tmdbpp/tvfilter.cpp
+ tmdbpp/personfilter.cpp
 
  tmdbpp/tvfilter.h
  tmdbpp/api.h
  tmdbpp/apiagent.h
  tmdbpp/companies.h
+ tmdbpp/credits.h
  tmdbpp/get.h
  tmdbpp/movie.h
+ tmdbpp/moviefilter.h
  tmdbpp/movies.h
  tmdbpp/pagedcollection.h
+ tmdbpp/person.h
+ tmdbpp/personfilter.h
+ tmdbpp/persons.h
  tmdbpp/search.h
  tmdbpp/tvfilter.h
  tmdbpp/tvseries.h

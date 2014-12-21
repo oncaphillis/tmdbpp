@@ -22,6 +22,7 @@ namespace tmdbpp {
         static const std::string MethodCompany;
         static const std::string MethodKeyword;
         static const std::string MethodTv;
+        static const std::string MethodPerson;
 
         static const std::string ObjectCompany;
         static const std::string ObjectMovie;
@@ -32,6 +33,11 @@ namespace tmdbpp {
         static const std::string ObjectTopRated;
         static const std::string ObjectAiringToday;
         static const std::string ObjectOnTheAir;
+        static const std::string ObjectPerson;
+        static const std::string ObjectCredits;
+        static const std::string ObjectMovieCredits;
+        static const std::string ObjectTvCredits;
+        static const std::string ObjectCombinedCredits;
 
 
         static Api & instance(const std::string & apiKey="")  {

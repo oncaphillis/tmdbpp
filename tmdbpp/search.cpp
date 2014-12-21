@@ -63,7 +63,31 @@ namespace tmdbpp {
         return fetch(url,coll);
     }
 
+    Persons Search::person(const std::string & query,int page,bool adult) {
+        Persons coll;
+        std::stringstream ss;
+        std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectPerson+"?"+
+                 Arg("api_key",api().key())+"&"+Arg("query",query);
+
+        if(page>0)
+            url+="&"+Arg("page",page);
+
+        url+=Arg("include_adult",adult);
+
+        std::cerr << "URL=" << url << std::endl;
+
+        return fetch(url,coll);
+    }
+
+    MovieFilter Search::movie() {
+        return MovieFilter(this->api());
+    }
+
     TvFilter Search::tv() {
         return TvFilter(this->api());
+    }
+
+    PersonFilter Search::person() {
+        return PersonFilter(this->api());
     }
 }

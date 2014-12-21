@@ -4,8 +4,8 @@
 #include <string>
 
 namespace tmdbpp {
-    Movie Get::movie(int id,const std::string & lang) {
-        Movie m;
+    Media Get::movie(int id,const std::string & lang) {
+        Media m;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+"?"+Arg("api_key",api().key());
@@ -35,6 +35,14 @@ namespace tmdbpp {
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodKeyword+"/"+ss.str()+"?"+Arg("api_key",api().key());
         return fetch(url,k);
+    }
+
+    Person Get::person(int id) {
+        Person p;
+        std::stringstream ss;
+        ss << id;
+        std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        return fetch(url,p);
     }
 
     TvSeries Get::tv(int id,const std::string & lang) {

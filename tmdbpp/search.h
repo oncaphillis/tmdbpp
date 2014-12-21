@@ -11,6 +11,9 @@
 #include <tmdbpp/tvseriescollection.h>
 #include <tmdbpp/apiagent.h>
 #include <tmdbpp/tvfilter.h>
+#include <tmdbpp/moviefilter.h>
+#include <tmdbpp/persons.h>
+#include <tmdbpp/personfilter.h>
 
 namespace tmdbpp {
     class Api;
@@ -26,8 +29,11 @@ namespace tmdbpp {
         Collections collection(const std::string &query,int page=-1);
         Keywords    keyword(const std::string &query,int page=-1);
         TvSeriesCollection tv(const std::string &query,int page=-1);
+        Persons person(const std::string & query,int page=-1,bool adult=false);
 
         TvFilter tv();
+        PersonFilter person();
+        MovieFilter movie();
 
     };
 }
