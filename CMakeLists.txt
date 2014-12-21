@@ -5,12 +5,16 @@ aux_source_directory(. SRC_LIST)
 
 find_package(Boost)
 
+SET(VERSION 1.0)
+
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND)
 
 IF(UNIX)
-set(CMAKE_CXX_FLAGS "-ggdb -std=c++11 ${CMAKE_CXX_FLAGS}")
+
+set(CMAKE_CXX_FLAGS " -std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG " -ggdb ${CMAKE_CXX_FLAGS_DEBUG}")
 
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
@@ -43,14 +47,14 @@ INCLUDE_DIRECTORIES( "." )
 add_executable(tmdbquery
  main.cpp
 )
-add_library(tmdbpp SHARED
+
+SET( LIB_SRC
  tmdbpp/api.cpp
  tmdbpp/get.cpp
  tmdbpp/search.cpp
  tmdbpp/moviefilter.cpp
  tmdbpp/tvfilter.cpp
  tmdbpp/personfilter.cpp
-
  tmdbpp/tvfilter.h
  tmdbpp/api.h
  tmdbpp/apiagent.h
@@ -72,10 +76,15 @@ add_library(tmdbpp SHARED
  ${WINSRC}
 )
 
+add_library(tmdbpp-${VERSION} SHARED ${LIB_SRC})
+add_library(tmdbpp STATIC ${LIB_SRC})
+
+target_link_libraries(tmdbquery tmdbpp)
+
 IF(WIN32)
- target_link_libraries(tmdbquery tmdbpp winhttp)
+ target_link_libraries(tmdbpp winhttp)
 ENDIF(WIN32)
 
 IF(UNIX)
- target_link_libraries(tmdbquery tmdbpp ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
+ target_link_libraries(tmdbpp ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
 ENDIF(UNIX)
