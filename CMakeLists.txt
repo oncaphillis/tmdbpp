@@ -42,6 +42,8 @@ INCLUDE_DIRECTORIES( "." )
 
 add_executable(tmdbquery
  main.cpp
+)
+add_library(tmdbpp SHARED
  tmdbpp/api.cpp
  tmdbpp/get.cpp
  tmdbpp/search.cpp
@@ -70,13 +72,10 @@ add_executable(tmdbquery
  ${WINSRC}
 )
 
-
-
-
 IF(WIN32)
- target_link_libraries(tmdbquery winhttp)
+ target_link_libraries(tmdbquery tmdbpp winhttp)
 ENDIF(WIN32)
 
 IF(UNIX)
- target_link_libraries(tmdbquery ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
+ target_link_libraries(tmdbquery tmdbpp ${CURL_LIBRARIES} ${CURLPP_LIBRARIES})
 ENDIF(UNIX)
