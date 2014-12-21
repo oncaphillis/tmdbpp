@@ -72,7 +72,7 @@ namespace tmdbpp {
         if(page>0)
             url+="&"+Arg("page",page);
 
-        url+=Arg("include_adult",adult);
+        url+="&"+Arg("include_adult",adult);
 
         std::cerr << "URL=" << url << std::endl;
 
