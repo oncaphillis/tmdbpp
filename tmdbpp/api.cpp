@@ -10,6 +10,7 @@ namespace tmdbpp {
     const std::string Api::MethodKeyword    = "/keyword";
     const std::string Api::MethodTv         = "/tv";
     const std::string Api::MethodPerson     = "/person";
+    const std::string Api::MethodGenre      = "/genre";
 
     const std::string Api::ObjectMovie             = "/movie";
     const std::string Api::ObjectCompany           = "/company";
@@ -24,6 +25,9 @@ namespace tmdbpp {
     const std::string Api::ObjectMovieCredits      = "/movie_credits";
     const std::string Api::ObjectTvCredits         = "/tv_credits";
     const std::string Api::ObjectCombinedCredits   = "/combined_credits";
+    const std::string Api::ObjectList              = "/list";
+
+    const std::string Api::OptionTv                = "/tv";
 
 };
 

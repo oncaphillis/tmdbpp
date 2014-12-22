@@ -56,5 +56,12 @@ namespace tmdbpp {
 
         return fetch(url,tv);
     }
-}
 
+    TvLister Get::tv() {
+        return TvLister(api());
+    }
+
+    MovieLister Get::movie() {
+        return MovieLister(api());
+    }
+}

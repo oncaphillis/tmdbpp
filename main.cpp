@@ -13,6 +13,16 @@ int main(int, char **)
     {
 
         tmdbpp::Api &api(tmdbpp::Api::instance());
+
+        std::list<tmdbpp::Genre> gl = api.get().movie().genres();
+
+        int i=0;
+
+        for(auto g : gl) {
+            std::cerr << "@" << ++i << " " << g.id() << " " << g.name() << std::endl;
+        }
+        ::exit(1);
+
         int p=1;
         while(true) {
             tmdbpp::Persons persons = api.search().person("kevin bacon",p++);

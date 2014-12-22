@@ -7,6 +7,8 @@
 #include <tmdbpp/collection.h>
 #include <tmdbpp/company.h>
 #include <tmdbpp/keyword.h>
+#include <tmdbpp/tvlister.h>
+#include <tmdbpp/movielister.h>
 
 namespace tmdbpp {
 
@@ -23,6 +25,8 @@ namespace tmdbpp {
         Company company(int id);
         Keyword keyword(int id);
         Person person(int id);
+        TvLister tv();
+        MovieLister movie();
 
 
     private:

@@ -11,6 +11,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <sstream>
 
 namespace tmdbpp {
 
@@ -31,6 +32,11 @@ namespace tmdbpp {
 
         JSonMapper(std::istream & json) : _up_ptree(new boost::property_tree::ptree()) {
             parse(json);
+        }
+
+        JSonMapper(const std::string & s) : _up_ptree(new boost::property_tree::ptree()) {
+            std::stringstream ss(s);
+            parse(ss);
         }
 
         ~JSonMapper() {
@@ -232,6 +238,7 @@ namespace tmdbpp {
         Genre(const boost::property_tree::ptree & p) : super(p) {
         }
     };
+
 
     class Configuration : public JSonMapper {
     private:

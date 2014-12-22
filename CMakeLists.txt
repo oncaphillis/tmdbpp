@@ -53,9 +53,10 @@ SET( LIB_SRC
  tmdbpp/get.cpp
  tmdbpp/search.cpp
  tmdbpp/moviefilter.cpp
+ tmdbpp/movielister.cpp
  tmdbpp/tvfilter.cpp
+ tmdbpp/tvlister.cpp
  tmdbpp/personfilter.cpp
- tmdbpp/tvfilter.h
  tmdbpp/api.h
  tmdbpp/apiagent.h
  tmdbpp/companies.h
@@ -63,6 +64,7 @@ SET( LIB_SRC
  tmdbpp/get.h
  tmdbpp/movie.h
  tmdbpp/moviefilter.h
+ tmdbpp/movielister.h
  tmdbpp/movies.h
  tmdbpp/pagedcollection.h
  tmdbpp/person.h
@@ -70,6 +72,7 @@ SET( LIB_SRC
  tmdbpp/persons.h
  tmdbpp/search.h
  tmdbpp/tvfilter.h
+ tmdbpp/tvlister.h
  tmdbpp/tvseries.h
  tmdbpp/tvseriescollection.h
  tmdbpp/util.h

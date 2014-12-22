@@ -8,7 +8,10 @@
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #endif
+
+#include <tmdbpp/util.h>
 #include <string>
+#include <sstream>
 
 namespace tmdbpp {
 
@@ -24,11 +27,9 @@ namespace tmdbpp {
 
         }
 
-        template<class T>
-        T & fetch(const std::string & url,T & t) {
+        std::string fetch(const std::string & url) {
 #ifdef _WIN32
-            std::string s=WGet::instance().get(url);
-            t = T(std::stringstream(s));
+            return WGet::instance().get(url);
 #else
             std::stringstream ss;
             curlpp::options::Url myUrl(url);
@@ -36,9 +37,34 @@ namespace tmdbpp {
             myRequest.setOpt(myUrl);
             myRequest.setOpt(curlpp::options::WriteStream(&ss));
             myRequest.perform();
-            t = T(ss);
+            return ss.str();
 #endif
+        }
+
+        template<class T>
+        T & fetch(const std::string & url,T & t) {
+            std::stringstream ss(fetch(url));
+            t = T(ss);
             return t;
+        }
+
+        template<class T>
+        std::list<T>  & fetch(const std::string & url,std::list<T> & l,const std::string & stree="") {
+            std::string s = fetch(url);
+
+            JSonMapper js(s);
+
+            l.clear();
+            if(!stree.empty())  {
+                for( auto a : js.ptree().get_child(stree)) {
+                    l.push_back(a.second);
+                }
+            } else {
+                for( auto a : js.ptree()) {
+                    l.push_back(a.second);
+                }
+            }
+            return l;
         }
 
         Api & api() {
