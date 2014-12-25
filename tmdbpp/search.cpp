@@ -73,9 +73,6 @@ namespace tmdbpp {
             url+="&"+Arg("page",page);
 
         url+="&"+Arg("include_adult",adult);
-
-        std::cerr << "URL=" << url << std::endl;
-
         return fetch(url,coll);
     }
 
