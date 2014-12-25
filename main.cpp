@@ -24,7 +24,7 @@ void ScanTmdb(int id,std::map<int,std::shared_ptr<tmdbpp::MediaCredits> > & movi
     tmdbpp::Api &api(tmdbpp::Api::instance());
     tmdbpp::Person p=api.get().person(id);
 
-    os << "p:" << p.id() << ":" << p.name() << std::endl;
+    os << "p:" << p.id() << ":" << p.name() << "\r" << std::flush;
 
     persons.insert(id);
 
@@ -77,8 +77,10 @@ int main(int, char **)
         std::map<int,std::shared_ptr<tmdbpp::MediaCredits> > movies;
         std::set<int> persons;
 
+        std::ofstream fs("bacon");
+
         if(l.size()==1)
-            ScanTmdb(l.front().id(),movies,persons);
+            ScanTmdb(l.front().id(),movies,persons,0,0,fs);
 
 
 
