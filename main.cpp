@@ -19,7 +19,7 @@ void ScanTmdb(int id,std::map<int,std::shared_ptr<tmdbpp::MediaCredits> > & movi
 
     time_t t1 = time(&t1);
 
-    std::cerr << (float) n / (float)(t1-t0) << "\r" << std::flush;
+    std::cerr << "\x1b[K" << (float) n / (float)(t1-t0) << "\r" << std::flush;
 
     tmdbpp::Api &api(tmdbpp::Api::instance());
     tmdbpp::Person p=api.get().person(id);
