@@ -3,8 +3,8 @@
 #include <tmdbpp/credits.h>
 
 namespace tmdbpp {
-    PersonalCredits PersonFilter::movie_credits(int id,const std::string & lang) {
-        PersonalCredits cr;
+    MovieCredits PersonFilter::movie_credits(int id,const std::string & lang) {
+        MovieCredits cr;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+Api::ObjectMovieCredits+"?"+
@@ -19,8 +19,8 @@ namespace tmdbpp {
 
 
 
-    PersonalCredits PersonFilter::tv_credits(int id,const std::string & lang) {
-        PersonalCredits cr;
+    MovieCredits PersonFilter::tv_credits(int id,const std::string & lang) {
+        MovieCredits cr;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+Api::ObjectTvCredits+"?"+
@@ -34,8 +34,8 @@ namespace tmdbpp {
     }
 
 
-    PersonalCredits PersonFilter::combined_credits(int id,const std::string & lang) {
-        PersonalCredits coll;
+    MovieCredits PersonFilter::combined_credits(int id,const std::string & lang) {
+        MovieCredits coll;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodPerson+"/" + ss.str() + Api::ObjectCombinedCredits+"?"+

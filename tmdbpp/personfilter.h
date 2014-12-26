@@ -12,9 +12,9 @@ namespace tmdbpp {
         PersonFilter(Api &a ) : super(a) {
         }
 
-        PersonalCredits movie_credits(int id,const std::string & language="");
-        PersonalCredits tv_credits(int id,const std::string & language="");
-        PersonalCredits combined_credits(int id,const std::string & language="");
+        MovieCredits movie_credits(int id,const std::string & language="");
+        MovieCredits tv_credits(int id,const std::string & language="");
+        MovieCredits combined_credits(int id,const std::string & language="");
     private:
 
     };

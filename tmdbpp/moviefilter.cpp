@@ -3,8 +3,8 @@
 #include <tmdbpp/credits.h>
 
 namespace tmdbpp {
-    MediaCredits MovieFilter::credits(int id,const std::string & lang) {
-        MediaCredits cr;
+    PersonalCredits MovieFilter::credits(int id,const std::string & lang) {
+        PersonalCredits cr;
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+Api::ObjectCredits+"?"+

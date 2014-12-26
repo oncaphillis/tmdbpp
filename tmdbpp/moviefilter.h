@@ -13,7 +13,7 @@ namespace tmdbpp {
         MovieFilter(Api &a ) : super(a) {
         }
 
-        MediaCredits credits(int id,const std::string & language="");
+        PersonalCredits credits(int id,const std::string & language="");
     private:
     };
 }

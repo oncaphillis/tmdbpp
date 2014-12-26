@@ -239,8 +239,8 @@ namespace tmdbpp {
         std::list<crew_member_t> _as_crew;
     };
 
-    typedef BasicCredits< CastMember<MediaCredit> , CrewMember<MediaCredit> >       PersonalCredits;
-    typedef BasicCredits< CastMember<PersonalCredit> , CrewMember<PersonalCredit> > MediaCredits;
+    typedef BasicCredits< CastMember<MediaCredit> ,    CrewMember<MediaCredit> >    MovieCredits;
+    typedef BasicCredits< CastMember<PersonalCredit> , CrewMember<PersonalCredit> > PersonalCredits;
 
 }
 #endif // CREDITS_H
