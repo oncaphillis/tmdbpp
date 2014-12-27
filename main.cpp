@@ -194,6 +194,8 @@ public:
                     auto mc = api.search().movie().credits(m.media_id());
                     n++;
 
+                    it = _movie_to_person.insert(movie_to_person_t::value_type(m.media_id(),std::set<int>())).first;
+
                     for( auto c : mc.as_cast() ) {
                         os << "r:" << m.media_id() << ":" << c.id() << std::endl;
                         _movie_to_person[m.media_id()].insert(c.id());
@@ -203,24 +205,21 @@ public:
                             _orphans.insert(c.id());
                         }
                     }
-                    it=_movie_to_person.find(m.media_id());
                 } else {
                     ch++;
                 }
 
-                if(it != _movie_to_person.end()) {
-                    if(it->second.size()>200) {
-                        std::cerr << std::endl
-                                  << " !! #" << m.media_id() << " '" << _movies[m.media_id()] << "' "
-                                  << it->second.size() << " @ " << _movie_to_person[m.media_id()].size()
-                                  << std::endl;
+                if(it->second.size()>200) {
+                    std::cerr << std::endl
+                              << " !! #" << m.media_id() << " '" << _movies[m.media_id()] << "' "
+                              << it->second.size() << " @ " << _movie_to_person[m.media_id()].size()
+                              << std::endl;
 
-                        ::exit(1);
-                    }
+                    ::exit(1);
+                }
 
-                    for(auto p : it->second) {
-                        ids.push_back(p);
-                    }
+                for(auto p : it->second) {
+                    ids.push_back(p);
                 }
             }
         }
