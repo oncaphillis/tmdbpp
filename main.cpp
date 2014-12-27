@@ -193,7 +193,7 @@ public:
 
                     auto mc = api.search().movie().credits(m.media_id());
                     n++;
-                    std::cerr << "##" << mc.as_cast().size() << std::endl;
+
                     for( auto c : mc.as_cast() ) {
                         os << "r:" << m.media_id() << ":" << c.id() << std::endl;
                         _movie_to_person[m.media_id()].insert(c.id());
@@ -208,16 +208,23 @@ public:
                     ch++;
                 }
 
-                for(auto p : it->second) {
-                    ids.push_back(p);
-                }
+                if(it != _movie_to_person.end()) {
+                    if(it->second.size()>200) {
+                        std::cerr << std::endl
+                                  << " !! #" << m.media_id() << " '" << _movies[m.media_id()] << "' "
+                                  << it->second.size() << " @ " << _movie_to_person[m.media_id()].size()
+                                  << std::endl;
 
-                if(it->second.size()>200) {
-                    std::cerr << _movies[m.media_id()] << " " << it->second.size() << std::endl;
-                    ::exit(1);
+                        ::exit(1);
+                    }
+
+                    for(auto p : it->second) {
+                        ids.push_back(p);
+                    }
                 }
             }
         }
+        std::cerr << "-DONE-" << std::endl;
     }
 
     void scan(int id, std::ostream & os=std::cerr) {
