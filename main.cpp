@@ -131,84 +131,101 @@ public:
         return true;
     }
 
-    void scan(int id, int & n,int & ch, std::ostream & os=std::cerr,time_t t0=0) {
+    void scan(std::list<int> ids, std::ostream & os=std::cerr) {
 
-        if(t0==0)
-            t0 = time(&t0);
+        time_t t0 = time(&t0);
+        int n  = 0;
+        int ch = 0;
 
-        if(_persons.find(id) != _persons.end()) {
-            return;
-        }
+        while(!ids.empty()) {
 
-        time_t t1 = time(&t1);
+            int id = ids.front();
+            ids.pop_front();
 
-        std::cerr << "\x1b[K"
-                  << " n:" << std::setw(5) <<  n
-                  << " ch:" << std::setw(5) << ch
-                  << std::fixed << std::setprecision(2)
-                  << " t/s:" << (float) n / (float)(t1-t0)
-                  << "  p:"   << std::setw(5) << _persons.size()
-                  << "  m:"   << std::setw(5) << _movies.size()
-                  << "  o:"   << std::setw(5) << _orphans.size()
-                  << " mp:"   << std::setw(5) << _movie_to_person.size()
-                  << " pm:"   << std::setw(5) << _person_to_movie.size()
-                  << "\r" << std::flush;
-
-        tmdbpp::Api &api(tmdbpp::Api::instance());
-        tmdbpp::Person pnode=api.get().person(id);
-        n++;
-
-        os << "p:" << pnode.id() << ":" << pnode.name() << std::endl;
-        _persons[id] = pnode.name();
-        _orphans.erase(id);
-
-        tmdbpp::MovieCredits mc = api.search().person().movie_credits(id);
-        n++;
-
-        for(auto m : mc.as_cast()) {
-
-            movie_to_person_t::const_iterator it;
-
-            if((it=_movie_to_person.find(m.media_id())) == _movie_to_person.end()) {
-
-                movie_map_t::const_iterator it;
-
-                if((it = _movies.find(m.media_id())) != _movies.end()) {
-                    std::stringstream ss;
-                    ss << "movie #" << m.media_id() << " already defined as '" << it->second << "'"
-                       << std::endl;
-                    throw std::runtime_error(ss.str());
-                }
-
-                os << "m:" << m.media_id() << ":" << m.title() << std::endl;
-
-                _movies[m.media_id()] = m.title();
-
-                auto mc = api.search().movie().credits(m.media_id());
-                n++;
-                for( auto c : mc.as_cast() ) {
-                    os << "r:" << m.media_id() << ":" << c.id() << std::endl;
-                    _movie_to_person[m.media_id()].insert(c.id());
-                    _person_to_movie[c.id()].insert(m.media_id());
-
-                    if(_persons.find(c.id())==_persons.end()) {
-                        _orphans.insert(c.id());
-                    }
-                }
-            } else {
-                ch++;
+            if(_persons.find(id) != _persons.end()) {
+                continue;
             }
 
-            for(auto p : it->second) {
-                scan(p,n,ch,os,t0);
+            time_t t1 = time(&t1);
+
+            std::cerr << "\x1b[K"
+                      << " i:" << std::setw(5) <<  ids.size()
+                      << " n:" << std::setw(5) <<  n
+                      << " ch:" << std::setw(5) << ch
+                      << std::fixed << std::setprecision(2)
+                      << " t/s:" << (float) n / (float)(t1-t0)
+                      << "  p:"   << std::setw(5) << _persons.size()
+                      << "  m:"   << std::setw(5) << _movies.size()
+                      << "  o:"   << std::setw(5) << _orphans.size()
+                      << " mp:"   << std::setw(5) << _movie_to_person.size()
+                      << " pm:"   << std::setw(5) << _person_to_movie.size()
+                      << "\r" << std::flush;
+
+            tmdbpp::Api &api(tmdbpp::Api::instance());
+            tmdbpp::Person pnode=api.get().person(id);
+            n++;
+
+            os << "p:" << pnode.id() << ":" << pnode.name() << std::endl;
+            _persons[id] = pnode.name();
+            _orphans.erase(id);
+
+            tmdbpp::MovieCredits mc = api.search().person().movie_credits(id);
+            n++;
+
+            for(auto m : mc.as_cast()) {
+
+                movie_to_person_t::const_iterator it;
+
+                if((it=_movie_to_person.find(m.media_id())) == _movie_to_person.end()) {
+
+                    movie_map_t::const_iterator movie_it;
+
+                    if((movie_it = _movies.find(m.media_id())) != _movies.end()) {
+                        std::stringstream ss;
+                        ss << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "'"
+                           << std::endl;
+                        throw std::runtime_error(ss.str());
+                    }
+
+                    os << "m:" << m.media_id() << ":" << m.title() << std::endl;
+
+                    _movies[m.media_id()] = m.title();
+
+                    auto mc = api.search().movie().credits(m.media_id());
+                    n++;
+                    std::cerr << "##" << mc.as_cast().size() << std::endl;
+                    for( auto c : mc.as_cast() ) {
+                        os << "r:" << m.media_id() << ":" << c.id() << std::endl;
+                        _movie_to_person[m.media_id()].insert(c.id());
+                        _person_to_movie[c.id()].insert(m.media_id());
+
+                        if(_persons.find(c.id())==_persons.end()) {
+                            _orphans.insert(c.id());
+                        }
+                    }
+                    it=_movie_to_person.find(m.media_id());
+                } else {
+                    ch++;
+                }
+
+                for(auto p : it->second) {
+                    ids.push_back(p);
+                }
+
+                if(it->second.size()>200) {
+                    std::cerr << _movies[m.media_id()] << " " << it->second.size() << std::endl;
+                    ::exit(1);
+                }
             }
         }
     }
 
-    void scan(int id, std::ostream & os=std::cerr,time_t t0=0) {
+    void scan(int id, std::ostream & os=std::cerr) {
         int n  = 0;
         int ch = 0;
-        scan(id,n,ch,os,t0);
+        std::list<int> ids;
+        ids.push_back(id);
+        scan(ids,os);
     }
 
     const person_map_t & persons() const {
