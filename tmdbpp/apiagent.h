@@ -31,40 +31,65 @@ namespace tmdbpp {
 #ifdef _WIN32
             return WGet::instance().get(url);
 #else
-            std::stringstream ss;
-            curlpp::options::Url myUrl(url);
-            curlpp::Easy myRequest;
-            myRequest.setOpt(myUrl);
-            myRequest.setOpt(curlpp::options::WriteStream(&ss));
-            myRequest.perform();
-            return ss.str();
+            try {
+                std::stringstream ss;
+                curlpp::options::Url myUrl(url);
+                curlpp::Easy myRequest;
+
+                myRequest.setOpt(myUrl);
+                myRequest.setOpt(curlpp::options::WriteStream(&ss));
+                myRequest.setOpt(curlpp::options::FailOnError(true));
+
+                myRequest.perform();
+                return ss.str();
+            } catch(...) {
+                std::cerr << "CAUGHT SOMETHING " << std::endl;
+                return "";
+            }
 #endif
         }
 
         template<class T>
         T & fetch(const std::string & url,T & t) {
-            std::stringstream ss(fetch(url));
-            t = T(ss);
-            return t;
+            int tr=0;
+            while(tr++<3) {
+                std::stringstream ss(fetch(url));
+                try {
+                    t = T(ss);
+                    return t;
+                }  catch(std::exception & ex) {
+                    std::cerr << "Caught:'" << ex.what() << "' retry" << std::endl;
+                    ::sleep(1);
+                }
+            }
         }
 
         template<class T>
-        std::list<T>  & fetch(const std::string & url,std::list<T> & l,const std::string & stree="") {
-            std::string s = fetch(url);
+        std::list<T>  & fetch(const std::string & url,std::list<T> & lo,const std::string & stree="") {
+            int t=0;
+            while(t++<3) {
+                try {
+                    std::string s = fetch(url);
 
-            JSonMapper js(s);
+                    JSonMapper js(s);
 
-            l.clear();
-            if(!stree.empty())  {
-                for( auto a : js.ptree().get_child(stree)) {
-                    l.push_back(a.second);
-                }
-            } else {
-                for( auto a : js.ptree()) {
-                    l.push_back(a.second);
+                    std::list<T> l;
+                    if(!stree.empty())  {
+                        for( auto a : js.ptree().get_child(stree)) {
+                            l.push_back(a.second);
+                        }
+                    } else {
+                        for( auto a : js.ptree()) {
+                            l.push_back(a.second);
+                        }
+                    }
+                    lo.swap(l);
+                    return lo;
+                } catch(std::exception & ex) {
+                    std::cerr << "caught '" << ex.what() << "' retry" << std::endl;
+                    ::sleep(1);
                 }
             }
-            return l;
         }
 
         Api & api() {

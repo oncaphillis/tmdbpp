@@ -131,7 +131,7 @@ public:
         return true;
     }
 
-    void scan(int id,std::ostream & os=std::cerr,time_t t0=0, int n=0) {
+    void scan(int id, int & n,int & ch, std::ostream & os=std::cerr,time_t t0=0) {
 
         if(t0==0)
             t0 = time(&t0);
@@ -142,13 +142,16 @@ public:
 
         time_t t1 = time(&t1);
 
-        std::cerr << "\x1b[K" << std::fixed << std::setprecision(2)
-                  << (float) n / (float)(t1-t0)
-                  << "  p:" << std::setw(5) << _persons.size()
-                  << "  m:" << std::setw(5) << _movies.size()
-                  << "  o:" << std::setw(5) << _orphans.size()
-                  << " mp:" << std::setw(5) << _movie_to_person.size()
-                  << " pm:" << std::setw(5) << _person_to_movie.size()
+        std::cerr << "\x1b[K"
+                  << " n:" << std::setw(5) <<  n
+                  << " ch:" << std::setw(5) << ch
+                  << std::fixed << std::setprecision(2)
+                  << " t/s:" << (float) n / (float)(t1-t0)
+                  << "  p:"   << std::setw(5) << _persons.size()
+                  << "  m:"   << std::setw(5) << _movies.size()
+                  << "  o:"   << std::setw(5) << _orphans.size()
+                  << " mp:"   << std::setw(5) << _movie_to_person.size()
+                  << " pm:"   << std::setw(5) << _person_to_movie.size()
                   << "\r" << std::flush;
 
         tmdbpp::Api &api(tmdbpp::Api::instance());
@@ -192,12 +195,20 @@ public:
                         _orphans.insert(c.id());
                     }
                 }
+            } else {
+                ch++;
             }
 
             for(auto p : it->second) {
-                scan(p,os,t0,n);
+                scan(p,n,ch,os,t0);
             }
         }
+    }
+
+    void scan(int id, std::ostream & os=std::cerr,time_t t0=0) {
+        int n  = 0;
+        int ch = 0;
+        scan(id,n,ch,os,t0);
     }
 
     const person_map_t & persons() const {
@@ -259,7 +270,10 @@ int main(int, char **)
         std::cerr << std::endl << std::endl;
 
         std::ofstream fo("bacon_o");
-        if(m.ophans().size()>0) {
+
+        std::cerr << " orphans:" << m.ophans().size() << std::endl;
+
+        while(!m.ophans().empty()) {
             m.scan(*(m.ophans().begin()),fo);
         }
 
