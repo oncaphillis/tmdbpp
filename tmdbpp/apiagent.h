@@ -56,12 +56,12 @@ namespace tmdbpp {
                 std::stringstream ss(fetch(url));
                 try {
                     t = T(ss);
-                    return t;
                 }  catch(std::exception & ex) {
-                    std::cerr << "Caught:'" << ex.what() << "' retry" << std::endl;
+                    std::cerr << "Caught:'" << ex.what() << "' retry #" << tr << std::endl;
                     ::sleep(1);
                 }
             }
+            return t;
         }
 
         template<class T>
