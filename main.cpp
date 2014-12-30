@@ -208,7 +208,7 @@ public:
                 } else {
                     ch++;
                 }
-
+#if 0
                 if(it->second.size()>200) {
                     std::cerr << std::endl
                               << " !! #" << m.media_id() << " '" << _movies[m.media_id()] << "' "
@@ -217,7 +217,7 @@ public:
 
                     ::exit(1);
                 }
-
+#endif
                 for(auto p : it->second) {
                     ids.push_back(p);
                 }
