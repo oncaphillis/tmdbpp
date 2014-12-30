@@ -15,6 +15,14 @@
 
 namespace tmdbpp {
 
+    /** @short Interface between JSON data structures and TMDBPP data 
+        objects.
+
+        Uses boost::property_tree data structures to pull information
+        from the JSON tree and manages allocation/deallocation of ptree
+        structures.
+    */
+
     class JSonMapper {
     public:
         JSonMapper() : _up_ptree() {
@@ -116,6 +124,11 @@ namespace tmdbpp {
         return os << jsm.toString();
     }
 
+    /** @short Base class for everything in the TMDBPP API that holds an in ID and
+        provides an id() call.
+
+    */
+
     class IdHolder : public JSonMapper {
 
     private:
@@ -127,8 +140,13 @@ namespace tmdbpp {
 
         IdHolder(const boost::property_tree::ptree & p) : super(p) {
         }
+
         IdHolder(std::istream & is ) : super(is) {
         }
+
+        /** @short Return the "id" entry in the associated JSON tree as an
+            int.
+        */
 
         const int  id() const {
             return ptree().get<int>("id");
@@ -149,6 +167,7 @@ namespace tmdbpp {
         
         NameHolder() : super() {
         }
+
         NameHolder(const boost::property_tree::ptree &p) : super(p) {
         }
 

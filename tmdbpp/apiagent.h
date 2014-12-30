@@ -17,14 +17,21 @@ namespace tmdbpp {
 
     class Api;
 
-    // The base class for every class that likes to access the TMDBB
-    // Api
+    /** @short  The base class for every class that likes to access the TMDBB
+        Api.
+
+        On construction it gets passed a Api reference which it provides to its
+        subclasses via the api() call.
+    
+        Provides basic I/O via the fetch() methods which reads URLs and transforms
+        JSON to C++ classes.
+
+    */
 
     class ApiAgent {
     private:
     public:
         ApiAgent(Api & api) : _p_api(&api) {
-
         }
 
         std::string fetch(const std::string & url) {
@@ -91,6 +98,9 @@ namespace tmdbpp {
                 }
             }
         }
+
+        /** @short Return the Api we are associated with.
+         */
 
         Api & api() {
             return *_p_api;

@@ -10,6 +10,15 @@
 #include <map>
 
 namespace tmdbpp {
+    
+    /** @short Central manager of the TMDBPP interface. Holds the API key
+        and the configuration for a given connection.
+
+        An Api can not be constructed directly but has to be retrieved
+        via the instance() method.
+
+        @see Configuration, ApiAgent
+    */
 
     class Api {
     private:
@@ -43,6 +52,8 @@ namespace tmdbpp {
 
         static const std::string OptionTv;
 
+
+        
         static Api & instance(const std::string & apiKey="")  {
             static std::map<std::string,std::shared_ptr<Api>> m;
             std::string k=apiKey;
