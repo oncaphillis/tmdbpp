@@ -182,7 +182,8 @@ public:
 
                     if((movie_it = _movies.find(m.media_id())) != _movies.end()) {
                         std::stringstream ss;
-                        ss << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "'"
+                        ss << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "' "
+                           << " but no m=> p mapping available "
                            << std::endl;
                         throw std::runtime_error(ss.str());
                     }
@@ -267,20 +268,14 @@ int main(int, char **)
 {
     try
     {
-
         tmdbpp::Api &api(tmdbpp::Api::instance());
-
         int p=1;
-
         std::list<tmdbpp::PersonSummary> l;
-
         while(true) {
             tmdbpp::Persons persons = api.search().person("kevin bacon",p++);
             if(persons.empty())
                 break;
-
-            std::copy(persons.list().begin(),persons.list().end(),
-                      std::back_inserter(l));
+            std::copy(persons.begin(),persons.end(),std::back_inserter(l));
         }
 
         std::map<int,std::shared_ptr<tmdbpp::PersonalCredits> > movies;
