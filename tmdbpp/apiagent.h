@@ -2,14 +2,16 @@
 #define APIAGENT_H
 
 #ifdef _WIN32
-#include <tmdbpp/win_wget.h>
+    #include <tmdbpp/win_wget.h>
 #else
-#include <curlpp/cURLpp.hpp>
-#include <curlpp/Easy.hpp>
-#include <curlpp/Options.hpp>
+    #include <curlpp/cURLpp.hpp>
+    #include <curlpp/Easy.hpp>
+    #include <curlpp/Info.hpp>
+    #include <curlpp/Options.hpp>
 #endif
 
 #include <tmdbpp/util.h>
+
 #include <string>
 #include <sstream>
 #include <list>
@@ -23,7 +25,7 @@ namespace tmdbpp {
 
         On construction it gets passed a Api reference which it provides to its
         subclasses via the api() call.
-    
+
         Provides basic I/O via the fetch() methods which reads URLs and transforms
         JSON to C++ classes.
 
@@ -35,26 +37,16 @@ namespace tmdbpp {
         ApiAgent(Api & api) : _p_api(&api) {
         }
 
-        std::string fetch(const std::string & url) {
-#ifdef _WIN32
-            return WGet::instance().get(url);
-#else
-            try {
-                std::stringstream ss;
-                curlpp::options::Url myUrl(url);
-                curlpp::Easy myRequest;
 
-                myRequest.setOpt(myUrl);
-                myRequest.setOpt(curlpp::options::WriteStream(&ss));
-                myRequest.setOpt(curlpp::options::FailOnError(true));
+        /** @short Most basic fetch() method for an ApiAgent. Retrieve
+            an URL addressed data as a string.
 
-                myRequest.perform();
-                return ss.str();
-            } catch(...) {
-                return "";
-            }
-#endif
-        }
+            - Returns empty string if the requested record it not available
+
+            - Throws an exception if the I/O layer (i.e. network error) fails.
+         */
+
+        std::string fetch(const std::string & url);
 
         template<class T>
         T & fetch(const std::string & url,T & t) {
@@ -119,9 +111,8 @@ namespace tmdbpp {
         }
 
     private:
-        Api * _p_api;
+        ErrorStatus _status;
+        Api       * _p_api;
     };
-
-
 }
 #endif // APIAGENT_H

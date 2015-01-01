@@ -52,7 +52,9 @@ namespace tmdbpp {
 
         static const std::string OptionTv;
 
-
+        enum StatusCode {
+            StatusInvalidId = 6
+        };
         
         static Api & instance(const std::string & apiKey="")  {
             static std::map<std::string,std::shared_ptr<Api>> m;

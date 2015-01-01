@@ -24,8 +24,8 @@ namespace tmdbpp {
     */
 
     class JSonMapper {
-        typedef boost::property_tree::ptree ptree_t;
     public:
+        typedef boost::property_tree::ptree ptree_t;
         JSonMapper() : _up_ptree() {
         }
 
@@ -40,7 +40,7 @@ namespace tmdbpp {
             swap(*this,jsm);
         }
 
-        JSonMapper(std::istream & json) : _up_ptree(new boost::property_tree::ptree()) {
+        JSonMapper(std::istream & json) : _up_ptree(new ptree_t()) {
             parse(json);
         }
 
@@ -71,7 +71,7 @@ namespace tmdbpp {
             return *this;
         }
 
-        const boost::property_tree::ptree & ptree() const {
+        const ptree_t & ptree() const {
             if(_up_ptree.get()==NULL)
                 throw std::runtime_error("illegal access to invalid ptree");
             return *_up_ptree;
@@ -126,9 +126,39 @@ namespace tmdbpp {
         return os << jsm.toString();
     }
 
+    /** @short Class reptesentation of TMDB error records normaly associated with
+        a 405 error.
+    */
+
+    class ErrorStatus : public JSonMapper {
+    private:
+        typedef JSonMapper super;
+    public:
+        using super::ptree_t;
+        ErrorStatus() : super () {
+        }
+
+        ErrorStatus(const ptree_t &pt) : super(pt) {
+        }
+
+        ErrorStatus(const std::string & s) : super(s) {
+        }
+
+        ErrorStatus(const ErrorStatus & e) : super(e) {
+        }
+
+        std::string status_message() const {
+            return ptree().get<std::string>("status_message","");
+        }
+
+        int status_code() const {
+            return ptree().get<int>("status_code",0);
+        }
+    private:
+    };
+
     /** @short Base class for everything in the TMDBPP API that holds an in ID and
         provides an id() call.
-
     */
 
     class IdHolder : public JSonMapper {
@@ -137,10 +167,12 @@ namespace tmdbpp {
         typedef JSonMapper super;
 
     public:
+        using super::ptree_t;
+
         IdHolder() : super() {
         }
 
-        IdHolder(const boost::property_tree::ptree & p) : super(p) {
+        IdHolder(const ptree_t & p) : super(p) {
         }
 
         IdHolder(std::istream & is ) : super(is) {

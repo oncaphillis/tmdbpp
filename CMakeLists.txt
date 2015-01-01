@@ -50,6 +50,7 @@ add_executable(tmdbquery
 
 SET( LIB_SRC
  tmdbpp/api.cpp
+ tmdbpp/apiagent.cpp
  tmdbpp/get.cpp
  tmdbpp/search.cpp
  tmdbpp/moviefilter.cpp
