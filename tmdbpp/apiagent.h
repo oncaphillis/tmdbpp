@@ -38,14 +38,6 @@ namespace tmdbpp {
         }
 
 
-        /** @short Most basic fetch() method for an ApiAgent. Retrieve
-            an URL addressed data as a string.
-
-            - Returns empty string if the requested record it not available
-
-            - Throws an exception if the I/O layer (i.e. network error) fails.
-         */
-
         std::string fetch(const std::string & url);
 
         /** @short Fetch a single TMDBPP Object from the TMDB
@@ -58,23 +50,17 @@ namespace tmdbpp {
 
         template<class T>
         T & fetch(const std::string & url,T & t) {
-            int tr=0;
-            // We try three times max to fetch the URL with a pause if 1 sec
             std::string r;
-            while(tr++<3) {
-                std::stringstream ss(r=fetch(url));
-                try {
-                    t = T(ss);
-                    return t;
-                }  catch(std::exception & ex) {
-#ifdef _WIN32
-                    ::Sleep(tr * 1000);
-#else
-                    ::sleep(tr);
-#endif
-                }
+            std::stringstream ss(fetch(url));
+
+            if(!ss.str().empty()) {
+                t = T(ss);
+            } else  {
+                // We return an invalid e.g empty object on failure
+                t = T();
             }
-            throw std::runtime_error(std::string("failed to fetch url:'")+url+"'\nlast reply:["+r+"]\n");
+
+            return t;
         }
 
         /** @short Fetch data from the TMDB server and read in a complete list of TMDBPP
@@ -88,10 +74,10 @@ namespace tmdbpp {
         template<class T>
         std::list<T>  & fetch(const std::string & url,std::list<T> & lo,const std::string & stree="") {
             int t=0;
-            std::string r;
+
             while(t++<3) {
                 try {
-                    std::string s = r = fetch(url);
+                    std::string s = fetch(url);
 
                     JSonMapper js(s);
 
@@ -109,14 +95,8 @@ namespace tmdbpp {
                     return lo;
                 } catch(std::exception & ex) {
                     std::cerr << "caught '" << ex.what() << "' retry" << std::endl;
-#ifdef _WIN32
-                    ::Sleep(t * 1000);
-#else
-                    ::sleep(t);
-#endif
                 }
             }
-            throw std::runtime_error(std::string("failed to fetch url:'")+url+"'\nlast reply:["+r+"]\n");
         }
 
         /** @short Return the Api we are associated with.

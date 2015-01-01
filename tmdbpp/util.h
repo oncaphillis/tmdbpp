@@ -148,14 +148,20 @@ namespace tmdbpp {
         }
 
         std::string status_message() const {
-            return ptree().get<std::string>("status_message","");
+            return (*this) ? ptree().get<std::string>("status_message","") : "";
         }
 
         int status_code() const {
-            return ptree().get<int>("status_code",0);
+            return (*this) ? ptree().get<int>("status_code",0) : 0;
         }
     private:
     };
+
+
+    inline
+    std::ostream & operator<<(std::ostream & os,const ErrorStatus & es) {
+        return os << " #" << es.status_code() << " '" << es.status_message() << "'";
+    }
 
     /** @short Base class for everything in the TMDBPP API that holds an in ID and
         provides an id() call.

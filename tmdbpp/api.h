@@ -99,6 +99,20 @@ namespace tmdbpp {
             return Get(*this);
         }
 
+        /** @short Most basic fetch() method for an ApiAgent. Retrieve
+            an URL addressed data as a string.
+
+            - Returns empty string if the requested record it not available
+
+            - Throws an exception if the I/O layer (i.e. network error) fails.
+         */
+
+        std::string fetch(const std::string & url);
+
+        const ErrorStatus status() const {
+            return _status;
+        }
+
     private:
         Api(const std::string & apiKey) : _key(apiKey) {
             ApiAgent ag(*this);
@@ -108,6 +122,7 @@ namespace tmdbpp {
 
         std::string   _key;
         Configuration _config;
+        ErrorStatus   _status;
     };
 }
 
