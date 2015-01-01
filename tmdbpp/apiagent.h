@@ -80,9 +80,10 @@ namespace tmdbpp {
         template<class T>
         std::list<T>  & fetch(const std::string & url,std::list<T> & lo,const std::string & stree="") {
             int t=0;
+            std::string r;
             while(t++<3) {
                 try {
-                    std::string s = fetch(url);
+                    std::string s = r = fetch(url);
 
                     JSonMapper js(s);
 
@@ -107,6 +108,7 @@ namespace tmdbpp {
 #endif
                 }
             }
+            throw std::runtime_error(std::string("failed to fetch url:'")+url+"'\nlast reply:["+r+"]\n");
         }
 
         /** @short Return the Api we are associated with.
