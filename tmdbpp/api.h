@@ -55,7 +55,16 @@ namespace tmdbpp {
         enum StatusCode {
             StatusInvalidId = 6
         };
-        
+        /** @short Factory function: Retrieve an API instance for the given
+            API Key.
+
+            - Behaves like an "per-key" singleton function. No new instance will
+            be created for the same key.
+
+            - Calling with no key will try to pull the api key from the "apikey"
+            environment variable.
+         */
+
         static Api & instance(const std::string & apiKey="")  {
             static std::map<std::string,std::shared_ptr<Api>> m;
             std::string k=apiKey;
