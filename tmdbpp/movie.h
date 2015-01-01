@@ -1,7 +1,7 @@
 #ifndef TMDBPP_MOVIE_H
 #define TMDBPP_MOVIE_H
 
-#include <tmdbpp/util.h>
+#include <tmdbpp/company.h>
 #include <list>
 
 namespace tmdbpp {

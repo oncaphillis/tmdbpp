@@ -237,17 +237,6 @@ namespace tmdbpp {
 
     };
 
-    class CompanySummary : public NameIdHolder {
-    private:
-        typedef NameIdHolder super;
-    public:
-        CompanySummary() : super() {
-        }
-        CompanySummary(const boost::property_tree::ptree & p) : super(p) {
-        }
-        CompanySummary(std::istream & is) : super(is) {
-        }
-     };
 
     class Genre : public NameIdHolder {
     private:
