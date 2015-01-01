@@ -24,14 +24,16 @@ namespace tmdbpp {
     */
 
     class JSonMapper {
+        typedef boost::property_tree::ptree ptree_t;
     public:
         JSonMapper() : _up_ptree() {
         }
 
-        JSonMapper(const boost::property_tree::ptree & pt)  : _up_ptree(new boost::property_tree::ptree(pt)) {
+        JSonMapper(const boost::property_tree::ptree & pt)  : _up_ptree(new ptree_t(pt)) {
         }
 
-        JSonMapper(const JSonMapper & jsm) : JSonMapper(*jsm._up_ptree) {
+        JSonMapper(const JSonMapper & jsm) :
+            _up_ptree(jsm._up_ptree.get() == NULL ? NULL : new ptree_t(*jsm._up_ptree)) {
         }
 
         JSonMapper(JSonMapper && jsm)  {
