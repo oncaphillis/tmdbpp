@@ -59,7 +59,7 @@ namespace tmdbpp {
         T & fetch(const std::string & url,T & t) {
             int tr=0;
             // We try three times max to fetch the URL with a pause if 1 sec
-            std::strinmg r;
+            std::string r;
             while(tr++<3) {
                 std::stringstream ss(r=fetch(url));
                 try {
