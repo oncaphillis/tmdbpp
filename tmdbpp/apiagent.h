@@ -12,6 +12,7 @@
 #include <tmdbpp/util.h>
 #include <string>
 #include <sstream>
+#include <list>
 
 namespace tmdbpp {
 
@@ -66,7 +67,11 @@ namespace tmdbpp {
                     t = T(ss);
                     return t;
                 }  catch(std::exception & ex) {
+#ifdef _WIN32
+                    ::Sleep(tr * 1000);
+#else
                     ::sleep(tr);
+#endif
                 }
             }
             throw std::runtime_error(std::string("failed to fetch url:'")+url+"'\nlast reply:["+r+"]\n");
@@ -95,7 +100,11 @@ namespace tmdbpp {
                     return lo;
                 } catch(std::exception & ex) {
                     std::cerr << "caught '" << ex.what() << "' retry" << std::endl;
-                    ::sleep(1);
+#ifdef _WIN32
+                    ::Sleep(t * 1000);
+#else
+                    ::sleep(t);
+#endif
                 }
             }
         }
