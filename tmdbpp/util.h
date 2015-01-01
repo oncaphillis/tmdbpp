@@ -267,10 +267,10 @@ namespace tmdbpp {
     private:
     };
 
-    class Arg {
+    class UrlArg {
     public:
         template<class T>
-        Arg(const std::string & name,const T & value)  {
+        UrlArg(const std::string & name,const T & value)  {
             std::stringstream ss;
             ss << value;
 #ifdef _WIN32
@@ -349,7 +349,7 @@ namespace tmdbpp {
 
 
     inline
-    std::string operator+(const std::string &s,const Arg &a) {
+    std::string operator+(const std::string &s,const UrlArg &a) {
         return s+(std::string)a;
     }
 

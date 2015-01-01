@@ -8,10 +8,10 @@ namespace tmdbpp {
         Media m;
         std::stringstream ss;
         ss << id;
-        std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
 
         if(!lang.empty())
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
 
         return fetch(url,m);
     }
@@ -19,21 +19,21 @@ namespace tmdbpp {
         Collection c;
         std::stringstream ss;
         ss << id;
-        std::string url = Api::BaseUrl+Api::MethodCollection+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        std::string url = Api::BaseUrl+Api::MethodCollection+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
         return fetch(url,c);
     }
     Company Get::company(int id) {
         Company c;
         std::stringstream ss;
         ss << id;
-        std::string url = Api::BaseUrl+Api::MethodCompany+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        std::string url = Api::BaseUrl+Api::MethodCompany+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
         return fetch(url,c);
     }
     Keyword Get::keyword(int id) {
         Keyword k;
         std::stringstream ss;
         ss << id;
-        std::string url = Api::BaseUrl+Api::MethodKeyword+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        std::string url = Api::BaseUrl+Api::MethodKeyword+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
         return fetch(url,k);
     }
 
@@ -41,7 +41,7 @@ namespace tmdbpp {
         Person p;
         std::stringstream ss;
         ss << id;
-        std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
         return fetch(url,p);
     }
 
@@ -49,10 +49,10 @@ namespace tmdbpp {
         TvSeries tv;
         std::stringstream ss;
         ss << id;
-        std::string url = Api::BaseUrl+Api::MethodTv+"/"+ss.str()+"?"+Arg("api_key",api().key());
+        std::string url = Api::BaseUrl+Api::MethodTv+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
 
         if(!lang.empty())
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
 
         return fetch(url,tv);
     }

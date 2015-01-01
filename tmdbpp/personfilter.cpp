@@ -8,10 +8,10 @@ namespace tmdbpp {
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+Api::ObjectMovieCredits+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         return fetch(url,cr);
@@ -24,10 +24,10 @@ namespace tmdbpp {
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodPerson+"/"+ss.str()+Api::ObjectTvCredits+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         return fetch(url,cr);
@@ -39,10 +39,10 @@ namespace tmdbpp {
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodPerson+"/" + ss.str() + Api::ObjectCombinedCredits+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         return fetch(url,coll);

@@ -8,10 +8,10 @@ namespace tmdbpp {
         std::stringstream ss;
         ss << id;
         std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+Api::ObjectCredits+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         return fetch(url,cr);

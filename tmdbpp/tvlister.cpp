@@ -6,7 +6,7 @@ namespace tmdbpp {
     std::list<Genre> TvLister::genres() {
         std::list<Genre> ges;
         std::string url = Api::BaseUrl+Api::MethodGenre+Api::OptionTv+Api::ObjectList+"?"
-                +Arg("api_key",api().key());
+                +UrlArg("api_key",api().key());
 
         return fetch(url,ges,"genres");
     }

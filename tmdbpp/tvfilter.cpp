@@ -6,14 +6,14 @@ namespace tmdbpp {
         TvSeriesCollection coll;
         std::stringstream ss;
         std::string url = Api::BaseUrl+Api::MethodTv+Api::ObjectPopular+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         if(page>0)
-            url+="&"+Arg("page",page);
+            url+="&"+UrlArg("page",page);
 
         return fetch(url,coll);
     }
@@ -27,14 +27,14 @@ namespace tmdbpp {
         TvSeriesCollection coll;
         std::stringstream ss;
         std::string url = Api::BaseUrl+Api::MethodTv+Api::ObjectAiringToday+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         if(page>0)
-            url+="&"+Arg("page",page);
+            url+="&"+UrlArg("page",page);
 
         return fetch(url,coll);
     }
@@ -48,14 +48,14 @@ namespace tmdbpp {
         TvSeriesCollection coll;
         std::stringstream ss;
         std::string url = Api::BaseUrl+Api::MethodTv+Api::ObjectTopRated+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         if(page>0)
-            url+="&"+Arg("page",page);
+            url+="&"+UrlArg("page",page);
 
         return fetch(url,coll);
     }
@@ -68,14 +68,14 @@ namespace tmdbpp {
         TvSeriesCollection coll;
         std::stringstream ss;
         std::string url = Api::BaseUrl+Api::MethodTv+Api::ObjectTopRated+"?"+
-                 Arg("api_key",api().key());
+                 UrlArg("api_key",api().key());
 
         if(!lang.empty()) {
-            url+="&"+Arg("language",lang);
+            url+="&"+UrlArg("language",lang);
         }
 
         if(page>0)
-            url+="&"+Arg("page",page);
+            url+="&"+UrlArg("page",page);
 
         return fetch(url,coll);
     }
