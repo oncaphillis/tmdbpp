@@ -48,6 +48,14 @@ namespace tmdbpp {
 
         std::string fetch(const std::string & url);
 
+        /** @short Fetch a single TMDBPP Object from the TMDB
+            server.
+
+            Data is read from a give URL and interprered as a JSON Tree.
+            This is used to initialize a JSonMapper subclass given as
+            template arg T.
+        */
+
         template<class T>
         T & fetch(const std::string & url,T & t) {
             int tr=0;
