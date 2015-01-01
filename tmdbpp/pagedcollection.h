@@ -5,42 +5,22 @@
 
 namespace tmdbpp {
 
-    class PagedCollectionBase : public JSonMapper {
+    /** @short A single page in a collection of entries from
+        TmDb.
+
+        Many results are returned in the form of JSON pages.
+        Each page holds a (1) variable number of entries. (2)
+        The total number of entries and the total number of pages
+        to expect.
+    */
+
+    template<class ITEM>
+    class PagedCollection : public JSonMapper {
     private:
         typedef JSonMapper super;
     public:
-        PagedCollectionBase() : super() {
-        }
-        PagedCollectionBase(const boost::property_tree::ptree & p) : super(p) {
-        }        
-        PagedCollectionBase(std::istream & is) : super(is) {
-        }
-        PagedCollectionBase(const PagedCollectionBase & pc) : super(pc) {
-        }
 
-        int page() const {
-            return this->ptree().get<int>("page",0);
-        }
-
-        int total_pages() const {
-            return this->ptree().get<int>("total_pages",0);
-        }
-
-        int total_results() const {
-            return this->ptree().get<int>("total_results",0);
-        }
-        friend 
-        void swap(PagedCollectionBase & p0, PagedCollectionBase & p1) {
-            using std::swap;
-            swap(static_cast<super &>(p0), static_cast<super &>(p1));
-        }
-    };
-
-    template<class ITEM>
-    class PagedCollection : public PagedCollectionBase {
-    private:
-        typedef PagedCollectionBase super;
-    public:
+        typedef typename std::list<ITEM>::const_iterator const_iterator;
 
         PagedCollection() : super() {
         }
@@ -70,14 +50,38 @@ namespace tmdbpp {
             return _list;
         }
 
-        bool empty() const {
-            return list().empty();
+
+        int page() const {
+            return this->ptree().template get<int>("page",0);
         }
 
+        int total_pages() const {
+            return this->ptree().template get<int>("total_pages",0);
+        }
+
+        int total_results() const {
+            return this->ptree().template get<int>("total_results",0);
+        }
+
+        const_iterator begin() const {
+            return _list.begin();
+        }
+
+        const_iterator end() const {
+            return _list.begin();
+        }
+
+        bool empty() const {
+            return _list.empty();
+        }
+
+        size_t size() const {
+            return _list.size();
+        }
     private:
 
         void setup() {
-            for(auto n : ptree().get_child("results")) {
+            for(auto n : this->ptree().get_child("results")) {
                 _list.push_back(ITEM(n.second));
             }
         }
