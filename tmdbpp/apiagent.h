@@ -69,6 +69,14 @@ namespace tmdbpp {
             throw std::runtime_error(std::string("failed to fetch url:'")+url+"'\nlast reply:["+r+"]\n");
         }
 
+        /** @short Fetch data from the TMDB server and read in a complete list of TMDBPP
+            objects.
+
+            The String is expected to represent a linear list or a named entry within the JSon Tree
+            represents the list.
+
+        */
+
         template<class T>
         std::list<T>  & fetch(const std::string & url,std::list<T> & lo,const std::string & stree="") {
             int t=0;
