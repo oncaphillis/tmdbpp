@@ -59,6 +59,7 @@ SET( LIB_SRC
  tmdbpp/personfilter.cpp
  tmdbpp/api.h
  tmdbpp/apiagent.h
+ tmdbpp/company.h
  tmdbpp/companies.h
  tmdbpp/credits.h
  tmdbpp/get.h
