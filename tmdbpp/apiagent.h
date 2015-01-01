@@ -50,7 +50,6 @@ namespace tmdbpp {
                 myRequest.perform();
                 return ss.str();
             } catch(...) {
-                std::cerr << "CAUGHT SOMETHING " << std::endl;
                 return "";
             }
 #endif
@@ -59,16 +58,18 @@ namespace tmdbpp {
         template<class T>
         T & fetch(const std::string & url,T & t) {
             int tr=0;
+            // We try three times max to fetch the URL with a pause if 1 sec
+            std::strinmg r;
             while(tr++<3) {
-                std::stringstream ss(fetch(url));
+                std::stringstream ss(r=fetch(url));
                 try {
                     t = T(ss);
+                    return t;
                 }  catch(std::exception & ex) {
-                    std::cerr << "Caught:'" << ex.what() << "' retry #" << tr << std::endl;
-                    ::sleep(1);
+                    ::sleep(tr);
                 }
             }
-            return t;
+            throw std::runtime_error(std::string("failed to fetch url:'")+url+"'\nlast reply:["+r+"]\n");
         }
 
         template<class T>
