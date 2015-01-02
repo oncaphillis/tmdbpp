@@ -34,64 +34,59 @@ namespace tmdbpp {
     */
 
     std::string Api::fetch(const std::string & url) {
-        try {
-            _status = ErrorStatus();
+        int retry = 0;
+        while(retry++<3) {
+            try {
+                _status = ErrorStatus();
 #ifdef _WIN32
-            return WGet::instance().get(url);
+                return WGet::instance().get(url);
 #else
-            std::stringstream ss;
-            curlpp::options::Url myUrl(url);
-            curlpp::Easy myRequest;
-
-            myRequest.setOpt(myUrl);
-            myRequest.setOpt(curlpp::options::WriteStream(&ss));
-            myRequest.setOpt(curlpp::options::FailOnError(false));
-
-            myRequest.perform();
-
-            int c;
-            curlpp::InfoGetter::get(myRequest,CURLINFO_RESPONSE_CODE,c);
-
-            if(c!=200) {
-
-                if(!ss.str().empty()) {
-                    _status = ErrorStatus(ss.str());
-                }
-
-                if(c==404 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
-                    return "";
-                }
-
-                if(c==504) {
-                    if(!ss.str().empty()) {
-                        std::cerr << "#" << c << " " << _status.status_code()
-                                  << " '" << _status.status_message() << "'"
-                                  << std::endl;
-                    }
-#if 0
-#ifdef _WIN32
-                    ::Sleep(t * 1000);
-#else
-                    ::sleep(t);
-#endif
-#endif
-                    return "";
-                }
-
                 std::stringstream ss;
+                curlpp::options::Url myUrl(url);
+                curlpp::Easy myRequest;
 
-                ss << "code #" << c << "'" << ss.str() << "'" << std::endl
-                   << "on URL '"<< url << "'" << std::endl;
+                myRequest.setOpt(myUrl);
+                myRequest.setOpt(curlpp::options::WriteStream(&ss));
+                myRequest.setOpt(curlpp::options::FailOnError(false));
 
-                throw std::runtime_error(ss.str());
-            }
+                myRequest.perform();
+
+                int c;
+                curlpp::InfoGetter::get(myRequest,CURLINFO_RESPONSE_CODE,c);
+
+                if(c!=200) {
+
+                    if(!ss.str().empty()) {
+                        _status = ErrorStatus(ss.str());
+                    }
+
+                    if(c==404 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
+                        return "";
+                    }
+                    // Gateway timeout.. wait and try again max 3 times
+                    if(c==504) {
+#ifdef _WIN32
+                      ::Sleep(retry * 1000);
+#else
+                        ::sleep(retry);
 #endif
-            return ss.str();
-        } catch(std::exception ex) {
-            throw;
+                        continue;
+                    }
+
+                    std::stringstream ss;
+
+                    ss << "code #" << c << "'" << ss.str() << "'" << std::endl
+                       << "on URL '"<< url << "'" << std::endl;
+
+                    throw std::runtime_error(ss.str());
+                }
+#endif
+                return ss.str();
+            } catch(std::exception ex) {
+                throw;
+            }
         }
     }
-
 };
 
 
