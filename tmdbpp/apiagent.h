@@ -52,12 +52,15 @@ namespace tmdbpp {
         T & fetch(const std::string & url,T & t) {
             std::string r;
             std::stringstream ss(fetch(url));
-
-            if(!ss.str().empty()) {
-                t = T(ss);
-            } else  {
-                // We return an invalid e.g empty object on failure
-                t = T();
+            try {
+                if(!ss.str().empty()) {
+                        t = T(ss);
+                } else  {
+                    // We return an invalid e.g empty object on failure
+                    t =  T();
+                }
+            } catch(std::exception & ex) {
+                std::cerr << "CAUGHT::" << ex.what() << std::endl;
             }
 
             return t;
