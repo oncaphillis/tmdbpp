@@ -56,13 +56,6 @@ namespace tmdbpp {
 
                 if(c!=200) {
 
-                    if(!ss.str().empty()) {
-                        _status = ErrorStatus(ss.str());
-                    }
-
-                    if(c==404 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
-                        return "";
-                    }
                     // Gateway timeout.. wait and try again max 3 times
                     if(c==504) {
 #ifdef _WIN32
@@ -71,6 +64,14 @@ namespace tmdbpp {
                         ::sleep(retry);
 #endif
                         continue;
+                    }
+
+                    if(!ss.str().empty()) {
+                        _status = ErrorStatus(ss.str());
+                    }
+
+                    if(c==404 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
+                        return "";
                     }
 
                     std::stringstream ss;
