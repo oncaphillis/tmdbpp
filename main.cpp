@@ -99,8 +99,8 @@ public:
                     orphans.insert(o);
 
                 if((itm=movie_to_person.find(n))!=movie_to_person.end() && itm->second.find(o)!=itm->second.end()) {
-                    std::cerr << "relation movie #" << n << " '" << movies[n] << "' => #" << o
-                              << " already defined " << std::endl;
+                    // std::cerr << "relation movie #" << n << " '" << movies[n] << "' => #" << o
+                    //           << " already defined " << std::endl;
                     continue;
                 }
 
@@ -131,29 +131,28 @@ public:
         return true;
     }
 
-    void scan(std::list<int> ids, std::ostream & os=std::cerr) {
-
-        time_t t0 = time(&t0);
-        int n  = 0;
-        int ch = 0;
+    void scan(std::set<int> ids, std::ostream & os=std::cerr) {
 
         while(!ids.empty()) {
 
-            int id = ids.front();
-            ids.pop_front();
+            int id = *ids.begin();
+            ids.erase(id);
 
             if(_persons.find(id) != _persons.end()) {
+                _pch++;
                 continue;
             }
 
             time_t t1 = time(&t1);
 
             std::cerr << "\x1b[K"
-                      << " i:" << std::setw(5) <<  ids.size()
-                      << " n:" << std::setw(5) <<  n
-                      << " ch:" << std::setw(5) << ch
+                      << " ids:" << std::setw(5) <<  ids.size()
+                      << " mrq:" << std::setw(5) <<  _mrq
+                      << " mch:" << std::setw(5) <<  _mch
+                      << " prq:" << std::setw(5) <<  _prq
+                      << " pch:" << std::setw(5) <<  _pch
                       << std::fixed << std::setprecision(2)
-                      << " t/s:" << (float) n / (float)(t1-t0)
+                      << " t/s:" << (float) (_mrq+_prq) / (float)(t1-_t0)
                       << "  p:"   << std::setw(5) << _persons.size()
                       << "  m:"   << std::setw(5) << _movies.size()
                       << "  o:"   << std::setw(5) << _orphans.size()
@@ -163,14 +162,20 @@ public:
 
             tmdbpp::Api &api(tmdbpp::Api::instance());
             tmdbpp::Person pnode=api.get().person(id);
-            n++;
+            _prq++;
+
+            if(!pnode) {
+                std::cerr << " failed to fetch person #" << id << " " << api.status() << "'" << std::endl;
+                continue;
+            }
 
             os << "p:" << pnode.id() << ":" << pnode.name() << std::endl;
+
             _persons[id] = pnode.name();
             _orphans.erase(id);
 
             tmdbpp::MovieCredits mc = api.search().person().movie_credits(id);
-            n++;
+            _prq++;
 
             for(auto m : mc.as_cast()) {
 
@@ -193,7 +198,7 @@ public:
                     _movies[m.media_id()] = m.title();
 
                     auto mc = api.search().movie().credits(m.media_id());
-                    n++;
+                    _mrq++;
 
                     it = _movie_to_person.insert(movie_to_person_t::value_type(m.media_id(),std::set<int>())).first;
 
@@ -207,7 +212,7 @@ public:
                         }
                     }
                 } else {
-                    ch++;
+                    _mch++;
                 }
 #if 0
                 if(it->second.size()>200) {
@@ -220,7 +225,7 @@ public:
                 }
 #endif
                 for(auto p : it->second) {
-                    ids.push_back(p);
+                    ids.insert(p);
                 }
             }
         }
@@ -228,10 +233,15 @@ public:
     }
 
     void scan(int id, std::ostream & os=std::cerr) {
-        int n  = 0;
-        int ch = 0;
-        std::list<int> ids;
-        ids.push_back(id);
+
+        _mrq = 0;
+        _prq = 0;
+        _mch = 0;
+        _pch = 0;
+        _t0 = time(&_t0);
+
+        std::set<int> ids;
+        ids.insert(id);
         scan(ids,os);
     }
 
@@ -256,6 +266,13 @@ public:
     }
 
 private:
+
+    int    _mch = 0;
+    int    _pch = 0;
+    int    _mrq = 0;
+    int    _prq = 0;
+    time_t _t0  = 0;
+
     std::set<int> _orphans;
     person_map_t _persons;
     movie_map_t  _movies;
