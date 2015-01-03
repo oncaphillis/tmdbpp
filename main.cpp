@@ -120,8 +120,8 @@ public:
             }
         }
 
-        std::cerr << persons.size() << ":" << movies.size() << ":"
-                  << person_to_movie.size() << ":" << movie_to_person.size() << std::endl;
+        std::cerr << "persons:" << persons.size() << " movies:" << movies.size() << ":"
+                  << " p=>m:" << person_to_movie.size() << " m=>p:" << movie_to_person.size() << std::endl;
 
         persons.swap(_persons);
         movies.swap(_movies);
@@ -190,9 +190,6 @@ public:
                         std::cerr << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "' "
                                   << " but no m=> p mapping available => refetching"
                                   << std::endl;
-
-
-                        throw std::runtime_error(ss.str());
                     } else {
                         os << "m:" << m.media_id() << ":" << m.title() << std::endl;
                         _movies[m.media_id()] = m.title();
