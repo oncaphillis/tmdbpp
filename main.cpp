@@ -187,15 +187,16 @@ public:
 
                     if((movie_it = _movies.find(m.media_id())) != _movies.end()) {
                         std::stringstream ss;
-                        ss << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "' "
-                           << " but no m=> p mapping available "
-                           << std::endl;
+                        std::cerr << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "' "
+                                  << " but no m=> p mapping available => refetching"
+                                  << std::endl;
+
+
                         throw std::runtime_error(ss.str());
+                    } else {
+                        os << "m:" << m.media_id() << ":" << m.title() << std::endl;
+                        _movies[m.media_id()] = m.title();
                     }
-
-                    os << "m:" << m.media_id() << ":" << m.title() << std::endl;
-
-                    _movies[m.media_id()] = m.title();
 
                     auto mc = api.search().movie().credits(m.media_id());
                     _mrq++;
