@@ -137,6 +137,7 @@ public:
 
             int id = *ids.begin();
             ids.erase(id);
+            _orphans.erase(id);
 
             if(_persons.find(id) != _persons.end()) {
                 _pch++;
@@ -172,7 +173,6 @@ public:
             os << "p:" << pnode.id() << ":" << pnode.name() << std::endl;
 
             _persons[id] = pnode.name();
-            _orphans.erase(id);
 
             tmdbpp::MovieCredits mc = api.search().person().movie_credits(id);
             _prq++;
