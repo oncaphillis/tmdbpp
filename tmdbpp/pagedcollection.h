@@ -68,7 +68,7 @@ namespace tmdbpp {
         }
 
         const_iterator end() const {
-            return _list.begin();
+            return _list.end();
         }
 
         bool empty() const {
