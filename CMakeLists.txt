@@ -51,6 +51,7 @@ add_executable(tmdbquery
 SET( LIB_SRC
  tmdbpp/api.cpp
  tmdbpp/apiagent.cpp
+ tmdbpp/authentication.cpp
  tmdbpp/get.cpp
  tmdbpp/search.cpp
  tmdbpp/moviefilter.cpp
@@ -60,6 +61,7 @@ SET( LIB_SRC
  tmdbpp/personfilter.cpp
  tmdbpp/api.h
  tmdbpp/apiagent.h
+ tmdbpp/authentication.h
  tmdbpp/company.h
  tmdbpp/companies.h
  tmdbpp/credits.h

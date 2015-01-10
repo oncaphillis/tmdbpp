@@ -64,4 +64,8 @@ namespace tmdbpp {
     MovieLister Get::movie() {
         return MovieLister(api());
     }
+
+    Authentication Get::authentication() {
+        return Authentication(api());
+    }
 }

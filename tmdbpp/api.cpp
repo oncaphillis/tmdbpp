@@ -8,9 +8,10 @@ namespace tmdbpp {
     const std::string Api::MethodCollection = "/collection";
     const std::string Api::MethodCompany    = "/company";
     const std::string Api::MethodKeyword    = "/keyword";
-    const std::string Api::MethodTv         = "/tv";
-    const std::string Api::MethodPerson     = "/person";
-    const std::string Api::MethodGenre      = "/genre";
+    const std::string Api::MethodTv                = "/tv";
+    const std::string Api::MethodPerson            = "/person";
+    const std::string Api::MethodGenre             = "/genre";
+    const std::string Api::MethodAuthentication    = "/authentication";
 
     const std::string Api::ObjectMovie             = "/movie";
     const std::string Api::ObjectCompany           = "/company";
@@ -26,8 +27,12 @@ namespace tmdbpp {
     const std::string Api::ObjectTvCredits         = "/tv_credits";
     const std::string Api::ObjectCombinedCredits   = "/combined_credits";
     const std::string Api::ObjectList              = "/list";
+    const std::string Api::ObjectSession           = "/session";
+    const std::string Api::ObjectToken             = "/token";
 
     const std::string Api::OptionTv                = "/tv";
+    const std::string Api::OptionNew               = "/new";
+    const std::string Api::OptionValidateWithLogin = "/validate_with_login";
 
     /** @short Most basic fetch() method for an ApiAgent. Retrieve
         an URL addressed data as a string.
@@ -73,11 +78,15 @@ namespace tmdbpp {
                     if(c==404 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
                         return "";
                     }
+                    if(c==401 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusDenied) {
+                        return "";
+                    }
 
                     std::stringstream ss;
 
-                    ss << "code #" << c << "'" << ss.str() << "'" << std::endl
-                       << "on URL '"<< url << "'" << std::endl;
+                    ss << "code #" << c << " status_message '" << _status.status_message() << "' "
+                       << " status code='" << _status.status_code() << "'"
+                       << " on URL '"<< url << "'" << std::endl;
 
                     throw std::runtime_error(ss.str());
                 }

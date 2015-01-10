@@ -9,8 +9,18 @@
 #include <tmdbpp/keyword.h>
 #include <tmdbpp/tvlister.h>
 #include <tmdbpp/movielister.h>
+#include <tmdbpp/movielister.h>
+#include <tmdbpp/authentication.h>
+
 
 namespace tmdbpp {
+
+    /** @short Api Proxy for all "get" operations i.e. single object result operations.
+     *
+     * "Gets" primarily fetch a single object loke Series, Move, Person
+     * or a filter for a collection but not a list or other collection
+     * of something. Sess Api::list() and Api::search() for this.
+     */
 
     class Get : public ApiAgent {
     private:
@@ -27,7 +37,7 @@ namespace tmdbpp {
         Person person(int id);
         TvLister tv();
         MovieLister movie();
-
+        Authentication authentication();
 
     private:
     };

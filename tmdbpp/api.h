@@ -21,7 +21,6 @@ namespace tmdbpp {
     */
 
     class Api {
-    private:
     public:
         static const std::string BaseUrl;
         static const std::string MethodConfig;
@@ -33,6 +32,7 @@ namespace tmdbpp {
         static const std::string MethodTv;
         static const std::string MethodPerson;
         static const std::string MethodGenre;
+        static const std::string MethodAuthentication;
 
         static const std::string ObjectCompany;
         static const std::string ObjectMovie;
@@ -49,12 +49,18 @@ namespace tmdbpp {
         static const std::string ObjectTvCredits;
         static const std::string ObjectCombinedCredits;
         static const std::string ObjectList;
+        static const std::string ObjectToken;
+        static const std::string ObjectSession;
 
         static const std::string OptionTv;
+        static const std::string OptionNew;
+        static const std::string OptionValidateWithLogin;
 
         enum StatusCode {
-            StatusInvalidId = 6
+            StatusInvalidId =  6,
+            StatusDenied    =  17
         };
+
         /** @short Factory function: Retrieve an API instance for the given
             API Key.
 
@@ -63,7 +69,7 @@ namespace tmdbpp {
 
             - Calling with no key will try to pull the api key from the "apikey"
             environment variable.
-         */
+        */
 
         static Api & instance(const std::string & apiKey="")  {
             static std::map<std::string,std::shared_ptr<Api>> m;
@@ -99,6 +105,14 @@ namespace tmdbpp {
             return Get(*this);
         }
 
+        const ErrorStatus status() const {
+            return _status;
+        }
+
+    private:
+
+        friend class ApiAgent;
+
         /** @short Most basic fetch() method for an ApiAgent. Retrieve
             an URL addressed data as a string.
 
@@ -109,11 +123,6 @@ namespace tmdbpp {
 
         std::string fetch(const std::string & url);
 
-        const ErrorStatus status() const {
-            return _status;
-        }
-
-    private:
         Api(const std::string & apiKey) : _key(apiKey) {
             ApiAgent ag(*this);
             std::string url = BaseUrl+MethodConfig+"?api_key="+apiKey;
