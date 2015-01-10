@@ -81,6 +81,9 @@ namespace tmdbpp {
                     if(c==401 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusDenied) {
                         return "";
                     }
+                    if(c==401 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidLogin) {
+                        return "";
+                    }
 
                     std::stringstream ss;
 

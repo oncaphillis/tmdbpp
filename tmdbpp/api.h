@@ -57,8 +57,9 @@ namespace tmdbpp {
         static const std::string OptionValidateWithLogin;
 
         enum StatusCode {
-            StatusInvalidId =  6,
-            StatusDenied    =  17
+            StatusInvalidId    =  6,
+            StatusDenied       =  17,
+            StatusInvalidLogin =  30,
         };
 
         /** @short Factory function: Retrieve an API instance for the given
