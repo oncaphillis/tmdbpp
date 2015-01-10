@@ -26,6 +26,8 @@ namespace tmdbpp {
     class JSonMapper {
     public:
         typedef boost::property_tree::ptree ptree_t;
+        typedef std::string timestamp_t;
+
         JSonMapper() : _up_ptree() {
         }
 
@@ -307,6 +309,13 @@ namespace tmdbpp {
 
     class UrlArg {
     public:
+        UrlArg() {
+        }
+
+        UrlArg(const std::string & name)  {
+            _o = name;
+        }
+
         template<class T>
         UrlArg(const std::string & name,const T & value)  {
             std::stringstream ss;
@@ -317,6 +326,16 @@ namespace tmdbpp {
 #else
             _o = name + "=" + curlpp::escape(ss.str());
 #endif
+        }
+
+        template<class T>
+        UrlArg operator()(const std::string & name) {
+            return UrlArg(name);
+        }
+
+        template<class T>
+        UrlArg operator()(const std::string & name,const std::string & val) {
+            return UrlArg(name,val);
         }
 
         operator std::string() const {
