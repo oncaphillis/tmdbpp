@@ -49,6 +49,7 @@ add_executable(tmdbquery
 )
 
 SET( LIB_SRC
+ nifty/IndexedMap.h
  tmdbpp/api.cpp
  tmdbpp/apiagent.cpp
  tmdbpp/authentication.cpp
