@@ -66,6 +66,7 @@ namespace nifty {
 
             // Compare two substings currently held in a std::map<std::string>
             //
+
             bool operator()(const pos_t & a,const pos_t & b) {
 
                 const string_t & as = _mp->find(a.first)->second;
@@ -75,6 +76,8 @@ namespace nifty {
                 typename string_t::size_type bi  = b.second == bs.length() ? string_t::npos : b.second;
 
                 // Handle the special "end of string" case
+                //
+
                 if( ai == string_t::npos || bi == string_t::npos )
                     return ai==bi ? a.first < b.first : ai==string_t::npos ? true : false;
 
@@ -86,20 +89,28 @@ namespace nifty {
                 return as.length() - ai == bs.length() - bi ? a.first > b.first : as.length() - ai < bs.length() - bi  ;
             }
 
+            // Comparator has to keep its state and is not
+            // allowed to overwrite _mp
+            Comparator & operator=(const Comparator &) {
+                return *this;
+            }
+
         private:
+            Comparator();
+            
+
             const map_t * _mp;
             chr_cmp_t     _cmp;
         };
 
-
     public:
-
         typedef std::set< pos_t, Comparator >  suffixidx_t;
         typedef typename map_t::const_iterator const_iterator;
         typedef typename map_t::size_type size_type;
 
-        BasicIndexedMap(const chr_cmp_t & chr_cmp= chr_cmp_t()) :
-            _comparator(_map,chr_cmp),
+        
+        BasicIndexedMap(const chr_cmp_t & chr_cmp = chr_cmp_t()) :
+            _comparator( _map, chr_cmp),
             _idx({},_comparator),
             _dirty(true),
             _chr_cmp(chr_cmp) {
@@ -188,6 +199,7 @@ namespace nifty {
         }
 
         void swap(BasicIndexedMap & m) {
+            using std::swap;
             _map.swap(m._map);
             _idx.swap(m._idx);
             _vector.swap(m._vector);
