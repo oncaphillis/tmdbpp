@@ -35,6 +35,16 @@ namespace nifty {
         typedef CHR_CMP                  chr_cmp_t;
         typedef CHR                      char_t;
 
+        enum match_t {
+            // Match anywhere
+            FreeMatch   = 0x00,
+            // Match has to be on the words start
+            AnchorStart = 0x01,
+            // Match has to be at the words end
+            AnchorEnd   = 0x02,
+            // Match has to be whole word
+            WholeWord   = 0x03
+        };
     private:
 
         // This is the way we address a single substring in our
@@ -111,23 +121,32 @@ namespace nifty {
 
         }
 
-        std::set<key_t> find(const string_t & str)  {
+        std::set<key_t> find(const string_t & str,match_t match=FreeMatch)  {
+            std::set<key_t> se;
+
+            if(str.empty())
+                return se;
+
             clean();
 
-            std::set<key_t> s;
 
             int i=0;
-
             if( (i = search(str,0,_vector.size()-1))!=-1 ) {
+                while(_eq(suffix(i).substr(0,str.size()),str)) {
+                    key_t k               = _vector[i].first;
+                    typename string_t::size_type s = _vector[i].second;
 
-                std::cerr << "[" << suffix(i) << "]" << std::endl;
+                    if( ( (match & AnchorStart) != 0 && s != 0 && !::isspace(_map[k][s-1]) ) ||
+                          (match & AnchorEnd  ) != 0 && s + str.size() != _map[k].size() && ! ::isspace(_map[k][s+str.size()])) {
+                        i++;
+                        continue;
+                    }
 
-                while(suffix(i).substr(0,str.size()) == str) {
-                    s.insert(_vector[i].first);
+                    se.insert(k);
                     i++;
                 }
             }
-            return s;
+            return se;
         }
 
         void add(const key_t & k,const std::string & s) {

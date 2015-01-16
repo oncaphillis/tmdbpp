@@ -11,32 +11,24 @@
 
 #include <nifty/IndexedMap.h>
 
-class CaseLessLess {
-public:
-    bool operator()(std::string a, std::string b) const {
-        std::transform(a.begin(),a.end(),a.begin(),::tolower);
-        std::transform(b.begin(),b.end(),b.begin(),::tolower);
-        return a < b;
-    }
-};
-
 class TmdbMap {
 
 private:
     typedef std::map<int,std::string>     person_map_t;
-    // typedef std::map<int,std::string>     movie_map_t;
     typedef std::map<int,std::set<int> >  movie_to_person_t;
     typedef std::map<int,std::set<int> >  person_to_movie_t;
-    typedef nifty::IndexedMap             movie_map_t;
+
+    typedef nifty::BasicIndexedMap<int,char,nifty::CaseLessLess<char> >    movie_map_t;
     typedef nifty::IndexedMap::key_t      movie_key_t;
 public:
 
     std::set<movie_key_t> searchMovies(const std::string & s) {
         time_t t0;
         time_t t1;
+
         t0 = time(&t0);
 
-        std::set<movie_key_t> se =  _movies.find(s);
+        std::set<movie_key_t> se =  _movies.find(s,movie_map_t::WholeWord);
 
         for(auto k : se) {
             if( _movies[k] != "" )
@@ -159,8 +151,6 @@ public:
         person_to_movie.swap(_person_to_movie);
         movie_to_person.swap(_movie_to_person);
         orphans.swap(_orphans);
-
-        _movies.dump();
 
         return true;
     }
