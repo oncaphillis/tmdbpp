@@ -7,23 +7,33 @@
 
 namespace nifty {
 
-    /** @short A Key,Value hash with the additional function of searching fir
+    template<class CHR>
+    class CaseLessLess {
+    public:
+        bool operator()(const CHR & a , const CHR & b) {
+            return ::tolower(a) < ::tolower(b);
+        }
+    };
+
+    /** @short A Key,Value hash with the additional function of searching for
         substrings.
 
         - One may add entries like _hash[key] = value
-        - Delete via _hash.erase(key)
+        - Delete via _map.erase(key)
         - But also search for substrings like std::set<KEY> = _hash.find_sub("str")
 
     */
 
-    template<class KEY,class C>
+    template<class KEY,class CHR,class CHR_CMP = std::less<CHR> >
     class BasicIndexedMap {
 
     public:
 
         typedef KEY                      key_t;
-        typedef std::basic_string<C>     string_t;
+        typedef std::basic_string<CHR>   string_t;
         typedef std::map<key_t,string_t> map_t;
+        typedef CHR_CMP                  chr_cmp_t;
+        typedef CHR                      char_t;
 
     private:
 
@@ -37,35 +47,38 @@ namespace nifty {
             Takes to positions and compares the two addressed
             substrings located in the associated map.
 
-         */
+        */
 
         class Comparator {
         public:
-            Comparator(const map_t & m) : _m(m) {
+            Comparator(const map_t & m,const chr_cmp_t & c=chr_cmp_t()) : _mp(&m), _cmp(c) {
             }
 
-            // Compare two substings
+            // Compare two substings currently held in a std::map<std::string>
+            //
             bool operator()(const pos_t & a,const pos_t & b) {
 
-                const string_t & as = _m.find(a.first)->second;
-                const string_t & bs = _m.find(b.first)->second;
+                const string_t & as = _mp->find(a.first)->second;
+                const string_t & bs = _mp->find(b.first)->second;
 
                 typename string_t::size_type ai  = a.second == as.length() ? string_t::npos : a.second;
                 typename string_t::size_type bi  = b.second == bs.length() ? string_t::npos : b.second;
 
+                // Handle the special "end of string" case
                 if( ai == string_t::npos || bi == string_t::npos )
-                    return ai==bi ? a.first < b.first : ai<bi;
+                    return ai==bi ? a.first < b.first : ai==string_t::npos ? true : false;
 
                 for(;ai < as.length() && bi < bs.length(); ai++, bi++) {
-                    if(as[ai] != bs[bi]) {
-                        return as[ai]<bs[bi];
+                    if( _cmp(as[ai],bs[bi]) || _cmp(bs[bi],as[ai]) ) {
+                        return _cmp(as[ai],bs[bi]);
                     }
                 }
                 return as.length() - ai == bs.length() - bi ? a.first > b.first : as.length() - ai < bs.length() - bi  ;
             }
 
         private:
-            const map_t & _m;
+            const map_t * _mp;
+            chr_cmp_t     _cmp;
         };
 
 
@@ -74,56 +87,73 @@ namespace nifty {
         typedef std::set< pos_t, Comparator >  suffixidx_t;
         typedef typename map_t::const_iterator const_iterator;
         typedef typename map_t::size_type size_type;
-        BasicIndexedMap() :
-            _comparator(_map),
+
+        BasicIndexedMap(const chr_cmp_t & chr_cmp= chr_cmp_t()) :
+            _comparator(_map,chr_cmp),
             _idx({},_comparator),
-            _dirty(true) {
+            _dirty(true),
+            _chr_cmp(chr_cmp) {
         }
 
-
-        std::string operator[](int i) const {
-            return _map.find(_vector[i].first)->second.substr(_vector[i].second);
-        }
-
-        void add(int idx,const std::string & s) {
-
-            _map[idx] = s;
-
-            for(int i=0;i<=s.length();i++) {
-                _idx.insert(pos_t(idx,i));
+        const string_t  & operator[](const key_t & k) const {
+            const_iterator i = _map.find(k);
+            if(i==end()) {
+                return _dummy;
             }
+            return i->second;
         }
 
-        const suffixidx_t & getIdx() const {
-            return _idx;
+        void dump() {
+            clean();
+            std::cerr << " !! " << _vector.size() << std::endl;
+            if(!_vector.empty())
+                std::cerr << "'" << suffix(0) << "'...'" << suffix(_vector.size()/2) << "'...'" << suffix(_vector.size()-1) << "'" << std::endl;
+
         }
 
-        void dump(const std::string & name) {
-            std::ofstream of(name);
-            for(auto a : _map) {
-                of << a.first << ":" << a.second << std::endl;
+        std::set<key_t> find(const string_t & str)  {
+            clean();
+
+            std::set<key_t> s;
+
+            int i=0;
+
+            if( (i = search(str,0,_vector.size()-1))!=-1 ) {
+
+                std::cerr << "[" << suffix(i) << "]" << std::endl;
+
+                while(suffix(i).substr(0,str.size()) == str) {
+                    s.insert(_vector[i].first);
+                    i++;
+                }
             }
-
-            for(auto a : _idx) {
-                of << a.first << ":" << a.second << std::endl;
-            }
+            return s;
         }
 
-        /** @short Binary search over the full suffix
-            array.
-
-            Either returns the first entry in the suffixidx_t
-            that matches or the first one that goes after the given
-            substring.
-
-        */
-
-        int search(const std::string & t) {
-            return search(t,0,_vector.size()-1);
+        void add(const key_t & k,const std::string & s) {
+            erase(k);
+            _map[k] = s;
+            for(typename string_t::size_type i=0;i<=s.length();i++) {
+                _idx.insert(pos_t(k,i));
+            }
+            _dirty = true;
         }
 
         size_type erase(const key_t & k) {
-            return _map.erase(k);
+            int n=0;
+            if(_map.find(k)!=_map.end()) {
+                for(typename suffixidx_t::iterator i=_idx.begin();i!=_idx.end();) {
+                    if(i->first == k) {
+                        i = _idx.erase(i);
+                        n++;
+                    } else {
+                        i++;
+                    }
+                }
+                _dirty = true;
+                return _map.erase(k);
+            }
+            return 0;
         }
 
         const_iterator begin() const {
@@ -138,10 +168,88 @@ namespace nifty {
             return _map.size();
         }
 
+        void swap(BasicIndexedMap & m) {
+            _map.swap(m._map);
+            _idx.swap(m._idx);
+            _vector.swap(m._vector);
+            bool b = _dirty;
+            _dirty = m._dirty;
+            m._dirty = b;
+        }
+
     private:
 
-        std::string operator()(int i) const {
-            return _map.find(_vector[i].first)->second;
+        void clean() {
+            if(_dirty) {
+                std::vector<pos_t> v(_idx.size());
+                _vector.swap(v);
+                std::copy(_idx.begin(),_idx.end(),_vector.begin());
+                _dirty=false;
+            }
+        }
+
+        bool _lt(const char_t & a,const char_t &b) {
+            return _chr_cmp(a,b);
+        }
+
+        bool _gt(const char_t & a,const char_t &b) {
+            return _chr_cmp(b,a);
+        }
+
+        bool _eq(const char_t & a,const char_t &b) {
+            return !_lt(a,b) && !_gt(a,b);
+        }
+
+        bool _lte(const char_t & a,const char_t &b) {
+            return _lt(a,b) || _eq(a,b);
+        }
+
+        bool _gte(const char_t & a,const char_t &b) {
+            return _gt(a,b) || _eq(a,b);
+        }
+
+        bool _eq(const string_t & a,const string_t &b) {
+            typename string_t::const_iterator ai = a.begin();
+            typename string_t::const_iterator bi = b.begin();
+            while(ai!=a.end() && bi!=a.end() && _eq(*ai,*bi)) {
+                ai++;
+                bi++;
+            }
+            return ai==a.end() && bi==b.end() ? true : false;
+        }
+
+        bool _gt(const string_t & a,const string_t &b) {
+            typename string_t::const_iterator ai = a.begin();
+            typename string_t::const_iterator bi = b.begin();
+            while(ai!=a.end() && bi!=a.end() && _eq(*ai,*bi)) {
+                ai++;
+                bi++;
+            }
+            return ai==a.end() && bi==b.end() ? false : ai==a.end() ? false : bi==b.end() ? true : _gt(*ai,*bi);
+        }
+
+        bool _gte(const string_t & a,const string_t &b) {
+            typename string_t::const_iterator ai = a.begin();
+            typename string_t::const_iterator bi = b.begin();
+            while(ai!=a.end() && bi!=a.end() && _eq(*ai,*bi)) {
+                ai++;
+                bi++;
+            }
+            return ai==a.end() && bi==b.end() ? true : ai==a.end() ? false : bi==b.end() ? true : _gt(*ai,*bi);
+        }
+
+        bool _lte(const string_t & a,const string_t &b) {
+            typename string_t::const_iterator ai = a.begin();
+            typename string_t::const_iterator bi = b.begin();
+            while(ai!=a.end() && bi!=a.end() && _eq(*ai,*bi)) {
+                ai++;
+                bi++;
+            }
+            return ai==a.end() && bi==b.end() ? true : ai==a.end() ? true : bi==b.end() ? false : _lt(*ai,*bi);
+        }
+
+        std::string suffix(int i) const {
+            return _map.find(_vector[i].first)->second.substr(_vector[i].second);
         }
 
         /** @short Binary search over a current subset of the
@@ -149,23 +257,16 @@ namespace nifty {
          */
 
         int search(const std::string & t,int i,int j) {
-            // If something has been added in between
-            // we have to transfer the std::set into our std::vector
 
-            if(_dirty) {
-                _vector.swap(std::vector<pos_t>(_idx.size()));
-                std::copy(_idx.begin(),_idx.end(),_vector.begin());
-            }
-
-            if(t <= (*this)[i])
+            if(_lte(t,suffix(i)))
                 return i;
 
-            if(t > (*this)[j] )
+            if(_gt(t,suffix(j)))
                 return j+1;
 
             int k = i+(j-i)/2;
 
-            return t<=(*this)[k] ? search(t,1,k) : search(t,k+1,j);
+            return _lte(t,suffix(k)) ? search(t,1,k) : search(t,k+1,j);
 
         }
 
@@ -174,29 +275,11 @@ namespace nifty {
         suffixidx_t        _idx;
         std::vector<pos_t> _vector;
         bool               _dirty;
+        string_t           _dummy;
+        chr_cmp_t          _chr_cmp;
     };
+
     typedef BasicIndexedMap<int,char> IndexedMap;
 };
-
-
-#if 0
-int main(int argc,char ** argv) {
-    IndexedHash ii;
-    std::string s;
-    int n=0;
-
-    if(argc==2) {
-        while(std::getline(std::cin,s)) {
-            ii.add(n,s);
-            std::cerr << n++ << "\r" << std::flush;
-        }
-        std::cerr << std::endl;
-        int n=ii.search(argv[1]);
-
-        std::cerr << ii[n] << "::" << ii(n) << std::endl;;
-    }
-    return 0;
-}
-#endif
 
 #endif // NIFTY_INDEXEDHASH_H

@@ -9,20 +9,46 @@
 #include <tmdbpp/api.h>
 #include <tmdbpp/search.h>
 
+#include <nifty/IndexedMap.h>
+
+class CaseLessLess {
+public:
+    bool operator()(std::string a, std::string b) const {
+        std::transform(a.begin(),a.end(),a.begin(),::tolower);
+        std::transform(b.begin(),b.end(),b.begin(),::tolower);
+        return a < b;
+    }
+};
+
 class TmdbMap {
 
 private:
-
     typedef std::map<int,std::string>     person_map_t;
-    typedef std::map<int,std::string>     movie_map_t;
+    // typedef std::map<int,std::string>     movie_map_t;
     typedef std::map<int,std::set<int> >  movie_to_person_t;
     typedef std::map<int,std::set<int> >  person_to_movie_t;
-
+    typedef nifty::IndexedMap             movie_map_t;
+    typedef nifty::IndexedMap::key_t      movie_key_t;
 public:
 
+    std::set<movie_key_t> searchMovies(const std::string & s) {
+        time_t t0;
+        time_t t1;
+        t0 = time(&t0);
+
+        std::set<movie_key_t> se =  _movies.find(s);
+
+        for(auto k : se) {
+            if( _movies[k] != "" )
+                std::cerr << "'" << _movies[k] << "'" << std::endl;
+        }
+
+        return se;
+    }
+
     bool load(std::istream & is) {
-        person_map_t persons;
-        movie_map_t  movies;
+        person_map_t      persons;
+        movie_map_t       movies;
         movie_to_person_t movie_to_person;
         person_to_movie_t person_to_movie;
 
@@ -32,7 +58,9 @@ public:
         std::string line;
 
         while(std::getline(is,line)) {
-            std::cerr << "\x1b[K" << i++ << "\r" << std::flush;
+            if((i % 1000) == 0)
+                std::cerr << "\x1b[K" << i << "\r" << std::flush;
+            i++;
 
             std::stringstream ss(line);
             std::string cell;
@@ -52,32 +80,35 @@ public:
 
             lv.push_back(cell);
 
-            int n;
+            movie_key_t mkey;
 
             {
                 std::stringstream ss(lv[1]);
 
-                if( ! (ss>>n)) {
+                if( ! (ss >> mkey)) {
                     std::cerr << "expected number found '" << lv[1] << "' in '" << line << "'" << std::endl;
                     return false;
                 }
             }
 
             if(lv[0] == "m") {
-                if(movies.find(n)!=movies.end()) {
-                    std::cerr << "movie #" << n << "already defined as '" << movies[n] << "'" << std::endl
+                if(movies[mkey] != "") {
+                    std::cerr << "movie #" << mkey << "already defined as '" << movies[mkey] << "'" << std::endl
                               << "found '" << lv[2] << "'" << std::endl;
                     return false;
                 }
-                movies[n] = lv[2];
+                //movies[n] = lv[2];
+
+                movies.add(mkey,lv[2]);
+
             } else if(lv[0] == "p") {
-                if(persons.find(n)!=persons.end()) {
-                    std::cerr << "person #" << n << "already defined as '" << persons[n] << "'" << std::endl
+                if(persons.find(mkey)!=persons.end()) {
+                    std::cerr << "person #" << mkey << "already defined as '" << persons[mkey] << "'" << std::endl
                               << "found '" << lv[2] << "'" << std::endl;
                     return false;
                 }
-                orphans.erase(n);
-                persons[n] = lv[2];
+                orphans.erase(mkey);
+                persons[mkey] = lv[2];
             } else if(lv[0] == "r") {
 
                 int o;
@@ -88,37 +119,37 @@ public:
                     return false;
                 }
 
-                movie_to_person_t::const_iterator itm = movie_to_person.find(n);
+                movie_to_person_t::const_iterator itm = movie_to_person.find(mkey);
 
-                if(movies.find(n)==movies.end()) {
-                    std::cerr << "relation to unknown movie #" << n << std::endl;
+                if( movies[mkey].empty() ) {
+                    std::cerr << "relation to unknown movie #" << mkey << std::endl;
                     return false;
                 }
 
                 if(persons.find(o)==persons.end())
                     orphans.insert(o);
 
-                if((itm=movie_to_person.find(n))!=movie_to_person.end() && itm->second.find(o)!=itm->second.end()) {
-                    // std::cerr << "relation movie #" << n << " '" << movies[n] << "' => #" << o
-                    //           << " already defined " << std::endl;
+                if((itm=movie_to_person.find(mkey))!=movie_to_person.end() && itm->second.find(o)!=itm->second.end()) {
                     continue;
                 }
 
-                person_to_movie_t::const_iterator itp = person_to_movie.find(n);
+                person_to_movie_t::const_iterator itp = person_to_movie.find(mkey);
 
-                if( (itp=person_to_movie.find(o))!=person_to_movie.end() && itp->second.find(n)!=itp->second.end()) {
-                    std::cerr << "relation m=>p (#" << o << "=>#" << n<< ") already defined" << std::endl;
+                if( (itp=person_to_movie.find(o))!=person_to_movie.end() && itp->second.find(mkey)!=itp->second.end()) {
+                    std::cerr << "relation m=>p (#" << o << "=>#" << mkey<< ") already defined" << std::endl;
                     continue;
                 }
 
-                movie_to_person[n].insert(o);
-                person_to_movie[o].insert(n);
+                movie_to_person[mkey].insert(o);
+                person_to_movie[o].insert(mkey);
 
             } else {
               std::cerr << "expected m|r|p found '" << lv[0] << "' in '" << line << "'" << std::endl;
               return false;
             }
         }
+
+        std::cerr << std::endl << i << std::endl;
 
         std::cerr << "persons:" << persons.size() << " movies:" << movies.size() << ":"
                   << " p=>m:" << person_to_movie.size() << " m=>p:" << movie_to_person.size() << std::endl;
@@ -128,15 +159,18 @@ public:
         person_to_movie.swap(_person_to_movie);
         movie_to_person.swap(_movie_to_person);
         orphans.swap(_orphans);
+
+        _movies.dump();
+
         return true;
     }
 
-    void scan(std::set<int> ids, std::ostream & os=std::cerr) {
+    void crawl(std::set<int> persons, std::ostream & os=std::cerr) {
 
-        while(!ids.empty()) {
+        while(!persons.empty()) {
 
-            int id = *ids.begin();
-            ids.erase(id);
+            int id = *persons.begin();
+            persons.erase(id);
             _orphans.erase(id);
 
             if(_persons.find(id) != _persons.end()) {
@@ -147,7 +181,7 @@ public:
             time_t t1 = time(&t1);
 
             std::cerr << "\x1b[K"
-                      << " ids:" << std::setw(5) <<  ids.size()
+                      << " ids:" << std::setw(5) <<  persons.size()
                       << " mrq:" << std::setw(5) <<  _mrq
                       << " mch:" << std::setw(5) <<  _mch
                       << " prq:" << std::setw(5) <<  _prq
@@ -185,14 +219,15 @@ public:
 
                     movie_map_t::const_iterator movie_it;
 
-                    if((movie_it = _movies.find(m.media_id())) != _movies.end()) {
+                    if( ! _movies[ m.media_id()].empty() ) {
                         std::stringstream ss;
                         std::cerr << "movie #" << m.media_id() << " already defined as '" << movie_it->second << "' "
                                   << " but no m=> p mapping available => refetching"
                                   << std::endl;
                     } else {
                         os << "m:" << m.media_id() << ":" << m.title() << std::endl;
-                        _movies[m.media_id()] = m.title();
+                        //_movies[m.media_id()] = m.title();
+                        _movies.add(m.media_id(),m.title());
                     }
 
                     auto mc = api.search().movie().credits(m.media_id());
@@ -212,35 +247,28 @@ public:
                 } else {
                     _mch++;
                 }
-#if 0
-                if(it->second.size()>200) {
-                    std::cerr << std::endl
-                              << " !! #" << m.media_id() << " '" << _movies[m.media_id()] << "' "
-                              << it->second.size() << " @ " << _movie_to_person[m.media_id()].size()
-                              << std::endl;
 
-                    ::exit(1);
-                }
-#endif
                 for(auto p : it->second) {
-                    ids.insert(p);
+                    persons.insert(p);
                 }
             }
         }
         std::cerr << "-DONE-" << std::endl;
     }
 
-    void scan(int id, std::ostream & os=std::cerr) {
 
+    void resetCounter() {
         _mrq = 0;
         _prq = 0;
         _mch = 0;
         _pch = 0;
         _t0 = time(&_t0);
+    }
 
+    void crawl(int person, std::ostream & os=std::cerr) {
         std::set<int> ids;
-        ids.insert(id);
-        scan(ids,os);
+        ids.insert(person);
+        crawl(ids,os);
     }
 
     const person_map_t & persons() const {
@@ -263,7 +291,18 @@ public:
         return _orphans;
     }
 
+    /** @short Singleton method for TmdbMap
+     *
+     */
+
+    static TmdbMap & instance() {
+        static TmdbMap m;
+        return m;
+    }
+
 private:
+    TmdbMap() {
+    }
 
     int    _mch = 0;
     int    _pch = 0;
@@ -271,73 +310,82 @@ private:
     int    _prq = 0;
     time_t _t0  = 0;
 
-    std::set<int> _orphans;
-    person_map_t _persons;
-    movie_map_t  _movies;
+    std::set<int>     _orphans;
+    person_map_t      _persons;
+    movie_map_t       _movies;
     movie_to_person_t _movie_to_person;
     person_to_movie_t _person_to_movie;
 };
 
 
-int main(int, char **)
+static const std::string Usage = "Usage: tmdbcli command arg";
+
+
+bool search(const std::vector<std::string> & args) {
+    if(args.size()!=1) {
+        std::cerr << Usage << std::endl;
+        return false;
+    }
+
+    TmdbMap::instance().searchMovies(args[0]);
+
+    return true;
+}
+
+int main(int argc, char **argv)
 {
     try
     {
         tmdbpp::Api &api(tmdbpp::Api::instance());
-        int p=1;
-        std::list<tmdbpp::PersonSummary> l;
-        while(true) {
-            tmdbpp::Persons persons = api.search().person("kevin bacon",p++);
-            if(persons.empty())
-                break;
-            std::copy(persons.begin(),persons.end(),std::back_inserter(l));
-        }
 
-        std::map<int,std::shared_ptr<tmdbpp::PersonalCredits> > movies;
-        std::set<int> persons;
+        std::ifstream fs("/shared/tmdb.dmp");
 
-        std::ifstream fs("bacon");
-        TmdbMap m;
+        TmdbMap & m(TmdbMap::instance());
+
         m.load(fs);
 
-        std::cerr << std::endl << std::endl;
+        std::cerr << std::endl << " - - - " << std::endl;
 
+        std::string l;
+
+
+        while(true) {
+            std::cout << " ?> "  << std::flush;
+            if(!std::getline(std::cin,l)) {
+                break;
+            }
+            m.searchMovies(l);
+        }
+
+#if 0
         std::ofstream fo("bacon_o");
 
         std::cerr << " orphans:" << m.ophans().size() << std::endl;
 
-        while(!m.ophans().empty()) {
-            m.scan(*(m.ophans().begin()),fo);
+        /*
+         if(!m.ophans().empty()) {
+            while(!m.ophans().empty()) {
+                m.scan(*(m.ophans().begin()),fo);
+            }
+        } else {
+            std::set<int> s;
+            for(std::map<int,std::string>::const_iterator it=m.persons().begin();it!=m.persons().end();it++) {
+                s.insert(it->first);
+            }
+            m.reset();
+            while(!s.empty()) {
+                std::cerr << std::endl <<  "+" << s.size() << std::endl;
+                m.scan(*(s.begin()),fo);
+                s.erase(*(s.begin()));
+            }
         }
+        */
 
-        std::cerr << " --> " << m.ophans().size() << std::endl;
-//        if(l.size()==1)
-//            ScanTmdb(l.front().id(),movies,persons,0,0,fs);
-
-
-
- #if 0
-        std::cerr << persons.page() << "/" << persons.total_pages() << "@" << persons.total_results() << std::endl;
-            for(const auto & p : persons.list()) {
-                std::cerr << p.name() << std::endl;
-                auto pp = api.get().person(p.id());
-                std::cerr << pp.name() << " -- " << pp.also_known_as() << " -- " << pp.birthday() << std::endl;
-                auto cr = api.search().person().movie_credits(p.id());
-
-                std::cerr << "<<" << std::endl
-                          << cr.as_cast().size() << "::" << cr.as_crew().size()
-                          << std::endl
-                          << ">>" << std::endl;
-                for(auto c : cr.as_cast()) {
-                    std::cerr << c.title() << "::" << c.character() << "@" << c.media_id() << std::endl;
-                    auto ccc = api.search().movie().credits(c.media_id());
-                    for(auto cc : ccc.as_cast() ) {
-                        std::cerr << " >> " << cc.name() << " " << cc.character() << std::endl;
-                    }
-                }
-             }
+        for(auto p : l) {
+            m.scan(p.id(),fo);
         }
 #endif
+
         return 0;
     }
     catch( std::exception &e )
