@@ -80,6 +80,7 @@ SET( LIB_SRC
  tmdbpp/tvlister.h
  tmdbpp/tvseries.h
  tmdbpp/tvseriescollection.h
+ tmdbpp/url.h
  tmdbpp/util.h
  ${WINSRC}
 )
