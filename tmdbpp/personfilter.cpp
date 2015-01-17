@@ -3,6 +3,10 @@
 #include <tmdbpp/credits.h>
 
 namespace tmdbpp {
+
+    /** @short Return all movies the person was casted for.
+     */
+
     MovieCredits PersonFilter::movie_credits(int id,const std::string & lang) {
         MovieCredits cr;
         std::stringstream ss;
@@ -17,7 +21,8 @@ namespace tmdbpp {
         return fetch(url,cr);
     }
 
-
+    /** @short Return all TV shows the person was casted for
+     */
 
     MovieCredits PersonFilter::tv_credits(int id,const std::string & lang) {
         MovieCredits cr;
@@ -33,6 +38,8 @@ namespace tmdbpp {
         return fetch(url,cr);
     }
 
+    /** @short Return all TV Shows/Movies the person was casted for.
+     */
 
     MovieCredits PersonFilter::combined_credits(int id,const std::string & lang) {
         MovieCredits coll;
