@@ -412,19 +412,23 @@ int main(int argc, char **argv)
                             });
             }
 
-            std::set<int> so;
-
-            std::set_difference(s1.begin(),s1.end(),s0.begin(),s0.end(),std::inserter(so,so.end()));
-
-            for(auto x : so) {
-                std::cerr << " #" << x << " '" << mo_map[x] << "'" << std::endl;
+            std::cerr << " * * L O C A L " << std::endl;
+            for(auto x : s0) {
+                std::cerr << " " << (s1.find(x)!=s1.end() ? "+" : " ") << x << " '" << m.getMovie(x) << "'" << std::endl;
             }
+            std::cerr << " * * E X T E R N " << std::endl;
+
+            for(auto x : s1) {
+                std::cerr << " " << (s0.find(x)!=s0.end() ? "+" : " ") << x << " '" << mo_map[x] << "'" << std::endl;
+            }
+
+            std::set<int> so;
+            std::set_difference(s1.begin(),s1.end(),s0.begin(),s0.end(),std::inserter(so,so.end()));
 
             m.crawlMovie(so,fo);
         }
 
 #else
-
         std::cerr << " orphans:" << m.ophans().size() << std::endl;
 
         /*
