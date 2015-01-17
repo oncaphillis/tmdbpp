@@ -94,6 +94,10 @@ namespace tmdbpp {
             return _config;
         }
 
+        Url url() const {
+            return Url(BaseUrl).add(UrlArg("apikey",key()));
+        }
+
         const std::string & key() const {
             return _key;
         }

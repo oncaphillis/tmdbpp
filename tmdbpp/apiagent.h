@@ -11,6 +11,7 @@
 #endif
 
 #include <tmdbpp/util.h>
+#include <tmdbpp/url.h>
 
 #include <string>
 #include <sstream>

@@ -307,43 +307,6 @@ namespace tmdbpp {
     private:
     };
 
-    class UrlArg {
-    public:
-        UrlArg() {
-        }
-
-        UrlArg(const std::string & name)  {
-            _o = name;
-        }
-
-        template<class T>
-        UrlArg(const std::string & name,const T & value)  {
-            std::stringstream ss;
-            ss << value;
-#ifdef _WIN32
-            // WinHttpClient takes care of argument escaping
-            _o = name + "=" + ss.str();
-#else
-            _o = name + "=" + curlpp::escape(ss.str());
-#endif
-        }
-
-        template<class T>
-        UrlArg operator()(const std::string & name) {
-            return UrlArg(name);
-        }
-
-        template<class T>
-        UrlArg operator()(const std::string & name,const std::string & val) {
-            return UrlArg(name,val);
-        }
-
-        operator std::string() const {
-            return _o;
-        }
-    private:
-        std::string _o;
-    };
 
     class MediaSummary : public IdHolder {
     private:
@@ -402,14 +365,6 @@ namespace tmdbpp {
         }
     private:
     };
-
-
-
-    inline
-    std::string operator+(const std::string &s,const UrlArg &a) {
-        return s+(std::string)a;
-    }
-
 }
 
 #endif // TMDBPP_UTIL_H

@@ -34,6 +34,7 @@ namespace tmdbpp {
     const std::string Api::OptionNew               = "/new";
     const std::string Api::OptionValidateWithLogin = "/validate_with_login";
 
+
     /** @short Most basic fetch() method for an ApiAgent. Retrieve
         an URL addressed data as a string.
     */
