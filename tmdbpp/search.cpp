@@ -4,76 +4,70 @@
 namespace tmdbpp {
 
     Movies Search::movie(const std::string & query,const std::string & language,int page) {
-       std::stringstream ss;
-       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectMovie+"?"+
-                UrlArg("api_key",api().key())+"&"+UrlArg("query",query);
+       Url u = api().url().add(Api::MethodSearch).add(Api::ObjectMovie).add(UrlArg("query",query));
 
        if(page>0)
-           url+="&"+UrlArg("page",page);
+           u = u.add(UrlArg("page",page));
+
+       std::cerr << " -- " << u << " -- " << std::endl;
 
        Movies m;
-       return fetch(url,m);
+
+       return fetch(u,m);
     }
 
     Companies Search::company(const std::string & query,int page) {
-       std::stringstream ss;
-       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectCompany+"?"+
-                UrlArg("api_key",api().key())+"&"+UrlArg("query",query);
+       Url u = api().url().add(Api::MethodSearch).add(Api::ObjectCompany).add(UrlArg("query",query));
 
        if(page>0)
-           url+="&"+UrlArg("page",page);
+           u += UrlArg("page",page);
 
        Companies c;
-       return fetch(url,c);
+       return fetch(u,c);
     }
 
     Collections Search::collection(const std::string & query,int page) {
-       std::stringstream ss;
-       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectCollection+"?"+
-                UrlArg("api_key",api().key())+"&"+UrlArg("query",query);
+
+       Url u = api().url().add(Api::MethodSearch).add(Api::ObjectCollection).add(UrlArg("query",query));
 
        if(page>0)
-           url+="&"+UrlArg("page",page);
+           u += UrlArg("page",page);
 
        Collections c;
-       return fetch(url,c);
+       return fetch(u,c);
     }
 
     Keywords Search::keyword(const std::string & query,int page) {
-       std::stringstream ss;
-       std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectKeyword+"?"+
-                UrlArg("api_key",api().key())+"&"+UrlArg("query",query);
+       Url u = api().url().add(Api::MethodSearch).add(Api::ObjectKeyword).add(UrlArg("query",query));
 
        if(page>0)
-           url+="&"+UrlArg("page",page);
+           u += UrlArg("page",page);
 
        Keywords k;
-       return fetch(url,k);
+       return fetch(u,k);
     }
 
     TvSeriesCollection Search::tv(const std::string & query,int page) {
         TvSeriesCollection coll;
-        std::stringstream ss;
-        std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectTv+"?"+
-                 UrlArg("api_key",api().key())+"&"+UrlArg("query",query);
+        Url u = api().url().add(Api::MethodSearch).add(Api::ObjectTv).add(UrlArg("query",query));
 
         if(page>0)
-            url+="&"+UrlArg("page",page);
+            u += UrlArg("page",page);
 
-        return fetch(url,coll);
+        return fetch(u,coll);
     }
 
     Persons Search::person(const std::string & query,int page,bool adult) {
         Persons coll;
-        std::stringstream ss;
-        std::string url = Api::BaseUrl+Api::MethodSearch+Api::ObjectPerson+"?"+
-                 UrlArg("api_key",api().key())+"&"+UrlArg("query",query);
+
+        Url u = api().url().add(Api::MethodSearch).add(Api::ObjectPerson).add(UrlArg("query",query));
 
         if(page>0)
-            url+="&"+UrlArg("page",page);
+            u += UrlArg("page",page);
 
-        url+="&"+UrlArg("include_adult",adult);
-        return fetch(url,coll);
+        u += UrlArg("include_adult",adult);
+
+        return fetch(u,coll);
     }
 
     MovieFilter Search::movie() {

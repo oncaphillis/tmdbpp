@@ -77,11 +77,15 @@ namespace tmdbpp {
         }
 
         Url(const Url &u) : _base(u._base),_args(u._args),_path(u._path) {
-
         }
 
         Url(Url && u) {
             swap(*this,u);
+        }
+
+        Url & operator=(Url u) {
+            swap(*this,u);
+            return *this;
         }
 
         Url & add(const std::string & path) {
@@ -94,6 +98,10 @@ namespace tmdbpp {
             return *this;
         }
 
+        Url & operator+=(const UrlArg & a) {
+            return add(a);
+        }
+
         std::string toString() const {
 
             std::stringstream ss;
@@ -103,7 +111,7 @@ namespace tmdbpp {
             int i=0;
 
             for(auto p : _path) {
-                ss << ( (!ss.str().empty()) && ss.str().back()!='/' ? "/" : "") << p;
+                ss << ( (!ss.str().empty()) && ss.str().back()!='/' && !p.empty() && p.front()!='/' ? "/" : "") << p;
             }
 
             for(auto a : _args) {
@@ -113,6 +121,9 @@ namespace tmdbpp {
             return ss.str();
         }
 
+        operator std::string () const {
+            return toString();
+        }
     private:
         friend
         void swap(Url &a, Url &b) {
