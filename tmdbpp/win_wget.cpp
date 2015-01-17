@@ -63,7 +63,7 @@ namespace tmdbpp {
                                                    (std::wstring(L"/")+pa+ex).c_str(), NULL, WINHTTP_NO_REFERER, NULL, ssl ? WINHTTP_FLAG_SECURE : NULL))!=NULL) {
                     if((results = WinHttpSendRequest( request, WINHTTP_NO_ADDITIONAL_HEADERS,
                                                       0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0))==TRUE) {
-                        
+                      
                         // Keep checking for data until there is nothing left.
                         
                         if((results = WinHttpReceiveResponse( request, NULL )) == TRUE)    {

@@ -47,6 +47,11 @@ INCLUDE_DIRECTORIES( "." )
 add_executable(tmdbquery
  main.cpp
 )
+IF(WIN32)
+add_executable(winget
+ winget.cpp
+)
+ENDIF(WIN32)
 
 SET( LIB_SRC
  nifty/IndexedMap.h
@@ -91,7 +96,9 @@ add_library(tmdbpp STATIC ${LIB_SRC})
 target_link_libraries(tmdbquery tmdbpp)
 
 IF(WIN32)
+ target_link_libraries(winget tmdbpp winhttp)
  target_link_libraries(tmdbpp winhttp)
+ target_link_libraries(tmdbpp-${VERSION} winhttp)
 ENDIF(WIN32)
 
 IF(UNIX)

@@ -46,6 +46,7 @@ namespace tmdbpp {
                 _status = ErrorStatus();
 #ifdef _WIN32
                 return WGet::instance().get(url);
+                // ::Sleep(retry * 1000);
 #else
                 std::stringstream ss;
                 curlpp::options::Url myUrl(url);
@@ -64,11 +65,7 @@ namespace tmdbpp {
 
                     // Gateway timeout.. wait and try again max 3 times
                     if(c==504) {
-#ifdef _WIN32
-                      ::Sleep(retry * 1000);
-#else
                         ::sleep(retry);
-#endif
                         continue;
                     }
 
@@ -94,8 +91,8 @@ namespace tmdbpp {
 
                     throw std::runtime_error(ss.str());
                 }
-#endif
                 return ss.str();
+#endif
             } catch(std::exception ex) {
                 throw;
             }
