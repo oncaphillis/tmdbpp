@@ -77,24 +77,25 @@ namespace tmdbpp {
         template<class T>
         std::list<T>  & fetch(const std::string & url,std::list<T> & lo,const std::string & stree="") {
             int t=0;
-
+            lo.clear();
             while(t++<3) {
                 try {
                     std::string s = fetch(url);
+                    if(!s.empty()) {
+                        JSonMapper js(s);
 
-                    JSonMapper js(s);
-
-                    std::list<T> l;
-                    if(!stree.empty())  {
-                        for( auto a : js.ptree().get_child(stree)) {
-                            l.push_back(a.second);
+                        std::list<T> l;
+                        if(!stree.empty())  {
+                            for( auto a : js.ptree().get_child(stree)) {
+                                l.push_back(a.second);
+                            }
+                        } else {
+                            for( auto a : js.ptree()) {
+                              l.push_back(a.second);
+                            }
                         }
-                    } else {
-                        for( auto a : js.ptree()) {
-                            l.push_back(a.second);
-                        }
+                        lo.swap(l);
                     }
-                    lo.swap(l);
                     return lo;
                 } catch(std::exception & ex) {
                     std::cerr << "caught '" << ex.what() << "' retry" << std::endl;

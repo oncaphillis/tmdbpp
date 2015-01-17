@@ -19,7 +19,7 @@ namespace tmdbpp {
     private:
         typedef JSonMapper super;
     public:
-
+        typedef ITEM value_type;
         typedef typename std::list<ITEM>::const_iterator const_iterator;
 
         PagedCollection() : super() {
@@ -81,8 +81,10 @@ namespace tmdbpp {
     private:
 
         void setup() {
-            for(auto n : this->ptree().get_child("results")) {
-                _list.push_back(ITEM(n.second));
+            if(*this) {
+                for(auto n : this->ptree().get_child("results")) {
+                    _list.push_back(ITEM(n.second));
+                }
             }
         }
 
