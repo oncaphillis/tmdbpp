@@ -108,14 +108,14 @@ namespace tmdbpp {
 
             ss << _base;
 
-            int i=0;
+
 
             for(auto p : _path) {
                 ss << ( (!ss.str().empty()) && ss.str().back()!='/' && !p.empty() && p.front()!='/' ? "/" : "") << p;
             }
-
+            int i=0;
             for(auto a : _args) {
-                ss << (i==0 ? "?" : "&") << a;
+                ss << (i++==0 ? "?" : "&") << a;
             }
 
             return ss.str();
