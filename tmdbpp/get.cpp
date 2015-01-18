@@ -6,15 +6,14 @@
 namespace tmdbpp {
     Media Get::movie(int id,const std::string & lang) {
         Media m;
-        std::stringstream ss;
-        ss << id;
-        std::string url = Api::BaseUrl+Api::MethodMovie+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
+        Url u=api().url().add(Api::MethodMovie).add(id);
 
         if(!lang.empty())
-            url+="&"+UrlArg("language",lang);
+            u += UrlArg("language",lang);
 
-        return fetch(url,m);
+        return fetch(u,m);
     }
+
     Collection Get::collection(int id) {
         Collection c;
         std::stringstream ss;
@@ -22,6 +21,7 @@ namespace tmdbpp {
         std::string url = Api::BaseUrl+Api::MethodCollection+"/"+ss.str()+"?"+UrlArg("api_key",api().key());
         return fetch(url,c);
     }
+
     Company Get::company(int id) {
         Company c;
         std::stringstream ss;
