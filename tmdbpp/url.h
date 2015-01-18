@@ -88,11 +88,15 @@ namespace tmdbpp {
             return *this;
         }
 
-        Url & add(const std::string & path) {
-            _path.push_back(path);
+        template<class P>
+        Url & add(const P & path) {
+            std::stringstream ss;
+            ss << path;
+            _path.push_back(ss.str());
             return *this;
         }
 
+        
         Url & add(const UrlArg & a) {
             _args.push_back(a);
             return *this;
@@ -137,6 +141,15 @@ namespace tmdbpp {
         std::list<std::string> _path;
         std::list<UrlArg> _args;
     };
+
+
+    template<>
+    inline
+    Url & Url::add<std::string>(const std::string & path) {
+        _path.push_back(path);
+        return *this;
+    }
+
     inline
     std::ostream & operator<<(std::ostream & os,const Url & u) {
         return os << u.toString();
