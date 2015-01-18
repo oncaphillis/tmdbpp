@@ -41,11 +41,11 @@ namespace tmdbpp {
 
     std::string Api::fetch(const std::string & url) {
         int retry = 0;
-        std::string content;
         while (retry++ < 3) {
             try {
                 _status = ErrorStatus();
                 int code;
+                std::string content;
 #ifdef _WIN32
                 WGet::Result r = WGet::instance().get(url);
                 code = r.code;
@@ -62,6 +62,7 @@ namespace tmdbpp {
                 myRequest.perform();
 
                 curlpp::InfoGetter::get(myRequest,CURLINFO_RESPONSE_CODE,code);
+
                 content = ss.str();
 #endif
                 if (code != 200) {
