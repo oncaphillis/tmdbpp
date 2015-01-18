@@ -9,8 +9,6 @@ namespace tmdbpp {
        if(page>0)
            u = u.add(UrlArg("page",page));
 
-       std::cerr << " -- " << u << " -- " << std::endl;
-
        Movies m;
 
        return fetch(u,m);
