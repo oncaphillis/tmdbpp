@@ -124,23 +124,14 @@ namespace nifty {
             return i->second;
         }
 
-        void dump() {
-            clean();
-            std::cerr << " !! " << _vector.size() << std::endl;
-            if(!_vector.empty())
-                std::cerr << "'" << suffix(0) << "'...'" << suffix(_vector.size()/2) << "'...'" << suffix(_vector.size()-1) << "'" << std::endl;
-
-        }
-
         std::set<key_t> find(const string_t & str,match_t match=FreeMatch)  {
             std::set<key_t> se;
 
-            if(str.empty())
+            if(str.empty() || _idx.empty())
                 return se;
 
             clean();
-
-
+            
             int i=0;
             if( (i = search(str,0,_vector.size()-1))!=-1 ) {
                 while(_eq(suffix(i).substr(0,str.size()),str)) {
