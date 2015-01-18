@@ -16,7 +16,7 @@ namespace tmdbpp {
         return g;
     }
     
-    std::string WGet::get(const std::string & url) {
+    WGet::Result WGet::get(const std::string & url) {
         std::wstring ws;
         std::string  os;
         URL_COMPONENTS c;
@@ -49,7 +49,8 @@ namespace tmdbpp {
         bool      ssl     = false;
         DWORD     size    = 0;
         
-        
+        DWORD code = 605;
+
         try {
             if(sh==L"http") {
             } else if(sh.compare(L"https")==0) {
@@ -72,9 +73,16 @@ namespace tmdbpp {
                                 if(!WinHttpQueryDataAvailable( request, &size)) {
                                     throw std::runtime_error("http error");
                                 }
-                                
-                                if(size==0)
+
+                                if (size == 0)
                                     break;
+
+                                DWORD dwTemp = sizeof(code);
+
+                                WinHttpQueryHeaders(request, WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
+                                    NULL, &code, &dwTemp, NULL);
+
+
                                 // Allocate space for the buffer.
                                 std::auto_ptr<byte> buff(new byte[size+1]);
                                 
@@ -104,7 +112,7 @@ namespace tmdbpp {
         if (connect)
             WinHttpCloseHandle(connect);
         
-        return os;
+        return Result(os,code);
     }
     
     WGet::WGet()  {

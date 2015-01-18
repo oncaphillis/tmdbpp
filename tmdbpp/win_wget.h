@@ -7,9 +7,17 @@ namespace tmdbpp {
     class WGet {
     private:
     public:
-        static WGet & instance();
-        std::string get(const std::string & url);
+        
+        class Result {
+        public:
+            Result(const std::string & con , int cod ) : content(con), code(cod) {
+            }
+            std::string content;
+            int code;
+        };
 
+        static WGet & instance();
+        Result get(const std::string & url);
 
     private:
         WGet();

@@ -41,12 +41,15 @@ namespace tmdbpp {
 
     std::string Api::fetch(const std::string & url) {
         int retry = 0;
-        while(retry++<3) {
+        std::string content;
+        while (retry++ < 3) {
             try {
                 _status = ErrorStatus();
+                int code;
 #ifdef _WIN32
-                return WGet::instance().get(url);
-                // ::Sleep(retry * 1000);
+                WGet::Result r = WGet::instance().get(url);
+                code = r.code;
+                content = r.content;
 #else
                 std::stringstream ss;
                 curlpp::options::Url myUrl(url);
@@ -58,42 +61,46 @@ namespace tmdbpp {
 
                 myRequest.perform();
 
-                int c;
-                curlpp::InfoGetter::get(myRequest,CURLINFO_RESPONSE_CODE,c);
-
-                if(c!=200) {
+                curlpp::InfoGetter::get(myRequest,CURLINFO_RESPONSE_CODE,code);
+                content = ss.str();
+#endif
+                if (code != 200) {
 
                     // Gateway timeout.. wait and try again max 3 times
-                    if(c==504) {
+                    if (code == 504) {
+#ifdef _WIN32
+                        ::Sleep(retry * 1000);
+#else
                         ::sleep(retry);
+#endif
                         continue;
                     }
 
-                    if(!ss.str().empty()) {
-                        _status = ErrorStatus(ss.str());
+                    if (!content.empty()) {
+                        _status = ErrorStatus(content);
                     }
 
-                    if(c==404 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
+                    if (code == 404 && !content.empty() && _status.status_code() == Api::StatusCode::StatusInvalidId) {
                         return "";
                     }
-                    if(c==401 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusDenied) {
+                    if (code == 401 && !content.empty() && _status.status_code() == Api::StatusCode::StatusDenied) {
                         return "";
                     }
-                    if(c==401 && !ss.str().empty() && _status.status_code() == Api::StatusCode::StatusInvalidLogin) {
+                    if (code == 401 && !content.empty() && _status.status_code() == Api::StatusCode::StatusInvalidLogin) {
                         return "";
                     }
 
                     std::stringstream ss;
 
-                    ss << "code #" << c << " status_message '" << _status.status_message() << "' "
-                       << " status code='" << _status.status_code() << "'"
-                       << " on URL '"<< url << "'" << std::endl;
+                    ss << "code #" << code << " status_message '" << _status.status_message() << "' "
+                        << " status code='" << _status.status_code() << "'"
+                        << " on URL '" << url << "'" << std::endl;
 
                     throw std::runtime_error(ss.str());
                 }
-                return ss.str();
-#endif
-            } catch(std::exception ex) {
+                return content;
+            }
+            catch (std::exception ex) {
                 throw;
             }
         }
