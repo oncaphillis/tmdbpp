@@ -33,5 +33,8 @@ Supports
 * get().tv(id,lang)
 * get().person(id)
 
-CMakefile and other configs are under developed-
+The test application in "main.cpp" omplements a simple Crawler over
+the tmdb webside, stores the results and makes it available for offline
+queries.
+
   
