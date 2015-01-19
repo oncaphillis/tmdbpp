@@ -86,9 +86,9 @@ public:
 
             if(lv[0] == "m") {
                 if(movies[mkey] != "") {
-                    std::cerr << "movie #" << mkey << "already defined as '" << movies[mkey] << "'" << std::endl
+                    std::cerr << "movie #" << mkey << " already defined as '" << movies[mkey] << "'" << std::endl
                               << "found '" << lv[2] << "'" << std::endl;
-                    return false;
+                    continue;
                 }
                 //movies[n] = lv[2];
 
