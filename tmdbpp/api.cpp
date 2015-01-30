@@ -12,6 +12,7 @@ namespace tmdbpp {
     const std::string Api::MethodPerson            = "/person";
     const std::string Api::MethodGenre             = "/genre";
     const std::string Api::MethodAuthentication    = "/authentication";
+    const std::string Api::MethodTimezones         = "/timezones";
 
     const std::string Api::ObjectMovie             = "/movie";
     const std::string Api::ObjectCompany           = "/company";

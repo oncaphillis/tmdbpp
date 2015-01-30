@@ -6,6 +6,7 @@
 #include <tmdbpp/get.h>
 #include <tmdbpp/apiagent.h>
 
+
 #include <string>
 #include <map>
 
@@ -33,6 +34,7 @@ namespace tmdbpp {
         static const std::string MethodPerson;
         static const std::string MethodGenre;
         static const std::string MethodAuthentication;
+        static const std::string MethodTimezones;
 
         static const std::string ObjectCompany;
         static const std::string ObjectMovie;
@@ -89,11 +91,9 @@ namespace tmdbpp {
 
             return *m[k];
         }
-
         const Configuration & configuration() const {
             return _config;
         }
-
         Url url() const {
             return Url(BaseUrl).add(UrlArg("api_key",key()));
         }
@@ -130,8 +130,22 @@ namespace tmdbpp {
 
         Api(const std::string & apiKey) : _key(apiKey) {
             ApiAgent ag(*this);
-            std::string url = BaseUrl+MethodConfig+"?api_key="+apiKey;
-            _config = ag.fetch(url,_config);
+
+            JSonMapper::ptree_t p0;
+            JSonMapper::ptree_t p1;
+
+            Url u0 = this->url().add(MethodConfig);
+            Url u1 = this->url().add(MethodTimezones).add(ObjectList);
+
+            std::stringstream s0(ag.fetch(u0));
+            std::stringstream s1(ag.fetch(u1));
+
+            boost::property_tree::read_json(s0,p0);
+            boost::property_tree::read_json(s1,p1);
+            
+            _config = Configuration(p0,p1);
+
+            std::cerr << " ++ " << _config.timezones().size() << std::endl;
         }
 
         std::string   _key;
