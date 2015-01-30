@@ -82,17 +82,21 @@ namespace tmdbpp {
             while(t++<3) {
                 try {
                     std::string s = fetch(url);
+
+
                     if(!s.empty()) {
-                        JSonMapper js(s);
 
                         std::list<T> l;
+                        boost::property_tree::ptree p;
+                        std::stringstream ss(s);
+                        boost::property_tree::read_json(ss, p );
                         if(!stree.empty())  {
-                            for( auto a : js.ptree().get_child(stree)) {
+                             for( auto a : p.get_child(stree)) {
                                 l.push_back(a.second);
                             }
                         } else {
-                            for( auto a : js.ptree()) {
-                              l.push_back(a.second);
+                            for( auto a : p) {
+                                l.push_back(a.second);
                             }
                         }
                         lo.swap(l);
